@@ -1,5 +1,5 @@
 import express, {Request, Response, NextFunction} from 'express';
-import userModel from '../model/userModel';
+import userModel from '../model/registerModel';
 
 const router = express.Router();
 
