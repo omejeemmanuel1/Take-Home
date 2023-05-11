@@ -4,7 +4,7 @@ import path from "path";
 import cookieParser from "cookie-parser";
 import logger from "morgan";
 import indexRouter from './routes/index'
-import userRouter from "./routes/users";
+import registerRouter from "./routes/register";
 import { connectDb, sequelize } from "./config/database";
 
 const app = express();
@@ -21,7 +21,7 @@ app.use(express.static(path.join(__dirname, "../public")));
 
 
 app.use('/', indexRouter)
-app.use('/user', userRouter)
+app.use('/user', registerRouter)
 
 
 
