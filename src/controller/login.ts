@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { loginUserSchema, options } from '../utils/utils';
-import registerModel from '../model/registerModel';
+import User from '../model/registerModel';
 
 const jwtSecret = process.env.JWT_SECRET_KEY as string;
 
@@ -17,7 +17,7 @@ export const Login = async (req: Request, res: Response) => {
     }
 
     // Find user in database
-    const user = await registerModel.findOne({
+    const user = await User.findOne({
       where: { email: email },
     });
 
