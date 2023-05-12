@@ -3,7 +3,7 @@ import express, { Request, Response, NextFunction } from "express";
 import path from "path";
 import cookieParser from "cookie-parser";
 import logger from "morgan";
-import indexRouter from './routes/index'
+
 import registerRouter from "./routes/register";
 import { connectDb, sequelize } from "./config/database";
 
@@ -20,7 +20,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "../public")));
 
 
-app.use('/', indexRouter)
+
 app.use('/user', registerRouter)
 
 
