@@ -8,6 +8,7 @@ const registerSchema = Joi.object({
   country: Joi.string().required(),
   state: Joi.string().required(),
   password: Joi.string().min(4).max(100).required(),
+  confirmPassword: Joi.string().min(4).max(100).required(),
 });
 
 export default registerSchema;
