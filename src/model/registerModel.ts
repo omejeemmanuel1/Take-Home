@@ -26,7 +26,7 @@ class User extends Model<UserAttributes, UserAttributes> implements UserAttribut
 User.init(
   {
     id: {
-      type: DataTypes.UUIDV4,
+      type: DataTypes.STRING, // corrected type from DataTypes.UUIDV4 to DataTypes.STRING
       primaryKey: true,
       allowNull: false,
     },
