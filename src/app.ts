@@ -4,6 +4,7 @@ import path from 'path';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import resetRouter from "./routes/resetPassword";
+import googleRouter from "./routes/google";
 
 
 import registerRouter from './routes/register';
@@ -11,9 +12,8 @@ import { connectDb, sequelize } from './config/database';
 
 const app = express();
 
-// view engine setup
-app.set('views', path.join(__dirname, '../views'));
-app.set('view engine', 'jade');
+app.use('/auth', googleRouter);
+
 
 app.use(logger('dev'));
 app.use(express.json());
