@@ -3,6 +3,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import path from 'path';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
+import resetRouter from "./routes/resetPassword";
 
 
 import registerRouter from './routes/register';
@@ -22,6 +23,7 @@ app.use(express.static(path.join(__dirname, '../public')));
 
 app.use('/user', registerRouter);
 
+app.use('/user', resetRouter);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
