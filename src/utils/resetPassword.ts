@@ -6,11 +6,11 @@ dotenv.config()
 
 export const generateOtp = () => {
     const otp = Math.floor(1000 + Math.random() * 9000)
-    const expiry = new Date()
+    const otp_expiry = new Date()
 
-    expiry.setTime(new Date().getTime() + 30 * 60 * 1000)
+    otp_expiry.setTime(new Date().getTime() + 30 * 60 * 1000)
 
-    return { otp, expiry }
+    return { otp, otp_expiry }
 }
 
 
@@ -78,8 +78,8 @@ export const validatePasswordResetToken = async (token: string) => {
             token,
             process.env.PASSWORD_RESET_SECRET as string
         )
-        const expiry = new Date(decodedToken.expiry)
-        if (expiry.getTime() < new Date().getTime()) {
+        const otp_expiry = new Date(decodedToken.otp_expiry)
+        if (otp_expiry.getTime() < new Date().getTime()) {
             return false
         }
         return true

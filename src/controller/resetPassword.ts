@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
-import  User from '../model/resetPasswordModel'
+//import  User from '../model/resetPasswordModel'
+import  User from '../model/registerModel'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
 import {
@@ -20,17 +21,17 @@ export const genOtp = async (req: Request, res: Response) => {
             })
         }
 
-        if (user.otp && user.expiry > new Date()) {
+        if (user.otp && user.otp_expiry> new Date()) {
             await sendResetPasswordOTP(email, user.otp)
 
             return res.status(200).json({ message: 'OTP resent successfully' })
         }
 
-        const { otp, expiry } = await generateOtp()
+        const { otp, otp_expiry} = await generateOtp()
         const token = await generatePasswordResetToken(email, res)
         await sendResetPasswordOTP(email, otp)
 
-        user = await user.update({ otp, expiry })
+        user = await user.update({ otp, otp_expiry})
 
         return res.status(200).json({ message: 'OTP sent successfully', token })
     } catch (error) {

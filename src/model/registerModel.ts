@@ -10,9 +10,13 @@ export interface UserAttributes {
   country: string;
   state: string;
   password: string;
+  otp: any;
+  otp_expiry:Date;
 }
 
 class User extends Model<UserAttributes, UserAttributes> implements UserAttributes {
+  otp: any;
+  otp_expiry: any;
   id!: string;
   firstName!: string;
   lastName!: string;
@@ -57,6 +61,14 @@ User.init(
     password: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    otp: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    otp_expiry: {
+      type: DataTypes.DATE,
+      allowNull: true,
     },
   },
   {

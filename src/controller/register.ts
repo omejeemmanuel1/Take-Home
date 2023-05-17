@@ -5,7 +5,7 @@ import User, { UserAttributes } from '../model/registerModel';
 import { v4 as uuidv4 } from 'uuid';
 
 const register = async (req: Request, res: Response) => {
-  const { firstName, lastName, email, mentalCondition, country, state, password, confirmPassword } = req.body;
+  const { firstName, lastName, email, mentalCondition, country, state, password, confirmPassword , otp, otp_expiry} = req.body;
 
   if (password !== confirmPassword) {
     return res.status(404).send('Password does not match');
@@ -29,6 +29,8 @@ const register = async (req: Request, res: Response) => {
       country,
       state,
       password: encryptedPassword,
+      otp,
+      otp_expiry,
     });
 
     const token = jwt.sign({ id: newUser.id, email }, process.env.JWT_TOKEN || 'SECRET-KEY', {
