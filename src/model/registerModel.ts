@@ -9,6 +9,7 @@ export interface UserAttributes {
   mentalCondition: string;
   country: string;
   state: string;
+  gender: string;
   password: string;
   otp: any;
   otp_expiry:Date;
@@ -24,6 +25,7 @@ class User extends Model<UserAttributes, UserAttributes> implements UserAttribut
   mentalCondition!: string;
   country!: string;
   state!: string;
+  gender!: string;
   password!: string;
 }
 
@@ -57,6 +59,10 @@ User.init(
     state: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    gender: {
+      type: DataTypes.STRING,
+      allowNull: false
     },
     password: {
       type: DataTypes.STRING,

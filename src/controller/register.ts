@@ -5,7 +5,7 @@ import User, { UserAttributes } from '../model/registerModel';
 import { v4 as uuidv4 } from 'uuid';
 
 const register = async (req: Request, res: Response) => {
-  const { firstName, lastName, email, mentalCondition, country, state, password, confirmPassword , otp, otp_expiry} = req.body;
+  const { firstName, lastName, email, mentalCondition, country, state,gender, password, confirmPassword , otp, otp_expiry} = req.body;
 
   if (password !== confirmPassword) {
     return res.status(404).send('Password does not match');
@@ -28,6 +28,7 @@ const register = async (req: Request, res: Response) => {
       mentalCondition,
       country,
       state,
+      gender,
       password: encryptedPassword,
       otp,
       otp_expiry,
@@ -45,6 +46,7 @@ const register = async (req: Request, res: Response) => {
         mentalCondition: newUser.mentalCondition,
         country: newUser.country,
         state: newUser.state,
+        gender: newUser.gender,
         token,
       },
     });
