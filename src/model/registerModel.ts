@@ -11,8 +11,8 @@ export interface UserAttributes {
   state: string;
   gender: string;
   password: string;
-  otp: any;
-  otp_expiry:Date;
+  otp: any|null;
+  otp_expiry:Date|null;
 }
 
 class User extends Model<UserAttributes, UserAttributes> implements UserAttributes {
