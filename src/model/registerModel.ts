@@ -9,10 +9,15 @@ export interface UserAttributes {
   mentalCondition: string;
   country: string;
   state: string;
+  gender: string;
   password: string;
+  otp: any|null;
+  otp_expiry:Date|null;
 }
 
 class User extends Model<UserAttributes, UserAttributes> implements UserAttributes {
+  otp: any;
+  otp_expiry: any;
   id!: string;
   firstName!: string;
   lastName!: string;
@@ -20,13 +25,14 @@ class User extends Model<UserAttributes, UserAttributes> implements UserAttribut
   mentalCondition!: string;
   country!: string;
   state!: string;
+  gender!: string;
   password!: string;
 }
 
 User.init(
   {
     id: {
-      type: DataTypes.UUIDV4,
+      type: DataTypes.STRING, // corrected type from DataTypes.UUIDV4 to DataTypes.STRING
       primaryKey: true,
       allowNull: false,
     },
@@ -54,9 +60,21 @@ User.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    gender: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
     password: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    otp: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    otp_expiry: {
+      type: DataTypes.DATE,
+      allowNull: true,
     },
   },
   {

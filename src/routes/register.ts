@@ -6,6 +6,8 @@ import { Login } from '../controller/login';
 const validator = require("express-joi-validation").createValidator({});
 const router = express.Router();
 
+router.post('/register', validator.body(registerSchema), register);
+
 
 router.post("/register", validator.body(registerSchema), register);
 router.post('/login', Login);
