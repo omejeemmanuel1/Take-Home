@@ -12,7 +12,7 @@ const JWT_SECRET= process.env.JWT_SECRET_KEY
 export const getGoogleAuthURL=()=>{
     const rootUrl = "https://accounts.google.com/o/oauth2/v2/auth";
     const options = {
-      redirect_uri: `http://localhost:4000/auth/google`,
+      redirect_uri: `http://localhost:${port}/auth/google`,
       client_id: GOOGLE_CLIENT_ID,
       access_type: "offline",
       response_type: "code",
