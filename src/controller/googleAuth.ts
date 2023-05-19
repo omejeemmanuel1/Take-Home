@@ -50,7 +50,7 @@ export const googleSignIn = async (req:Request, res:Response) => {
         state:"" ,
         password:"",
         gender: "",    
-        otp:"",
+        otp:null,
         otp_expiry:null,
          });
          
@@ -67,7 +67,9 @@ export const googleSignIn = async (req:Request, res:Response) => {
 
   
     } catch (error) {
+      console.log(error)
         return res.status(500).json({ Error: 'Internal Server Error' });
+
     }
   }
 
