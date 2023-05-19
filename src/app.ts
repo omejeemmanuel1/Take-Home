@@ -5,12 +5,15 @@ import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import resetRouter from "./routes/resetPassword";
 import googleRouter from "./routes/google";
+import cors from 'cors';
 
 
 import registerRouter from './routes/register';
 import { connectDb, sequelize } from './config/database';
 
 const app = express();
+
+app.use(cors({ origin: '*'}));
 
 app.use('/auth', googleRouter);
 
