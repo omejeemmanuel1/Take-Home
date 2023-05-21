@@ -52,6 +52,7 @@ export const googleSignIn = async (req:Request, res:Response) => {
         gender: "",    
         otp:null,
         otp_expiry:null,
+        verify: true
          });
          
      const token = jwt.sign({ id: newUser.id }, JWT_SECRET_KEY,{ expiresIn: '30d' });
