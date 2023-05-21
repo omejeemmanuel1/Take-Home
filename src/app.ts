@@ -13,10 +13,7 @@ import { connectDb, sequelize } from './config/database';
 
 const app = express();
 
-app.use(cors({ origin: '*'}));
-
-app.use('/auth', googleRouter);
-
+app.use(cors({ origin: '*' }));
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -24,15 +21,19 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '../public')));
 
-app.use('/user', registerRouter);
+// Remove the 'ch-ua-form-factor' feature from the Permissions-Policy header
+app.use((req, res, next) => {
+  res.setHeader('Permissions-Policy', 'geolocation=(), microphone=(), camera=(), interest-cohort=()');
+  next();
+});
 
+app.use('/user', registerRouter);
+app.use('/auth', googleRouter);
 app.use('/user', resetRouter);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
 });
-
-
 
 //DB connection
 const syncDatabase = async () => {

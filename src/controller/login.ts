@@ -32,13 +32,18 @@ export const Login = async (req: Request, res: Response) => {
       return res.status(400).json({ Error: 'Invalid email or password' });
     }
 
+    // Check if user is verified
+    if (!user.verify) {
+      return res.status(401).json({ Error: 'User not verified' });
+    }
+
     // Generate token
     const token = jwt.sign({ id: user.id }, jwtSecret, { expiresIn: '30d' });
 
     res.cookie('token', token, { httpOnly: true, maxAge: 30 * 60 * 1000 });
 
     return res.status(200).json({
-      msg: 'user logged in successfully',
+      msg: 'User logged in successfully',
       user,
       token,
     });
@@ -48,3 +53,4 @@ export const Login = async (req: Request, res: Response) => {
     return res.status(500).json({ Error: 'Something went wrong' });
   }
 };
+
