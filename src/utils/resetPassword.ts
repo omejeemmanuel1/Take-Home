@@ -14,6 +14,36 @@ export const generateOtp = () => {
 }
 
 
+export const sendVerificationOTP = async (email: string, otp: number) => {
+    try {
+        const transporter = nodemailer.createTransport({
+            host: process.env.smtp_host,
+            port: 587,
+            auth: {
+                user: process.env.sendinblue_user,
+                pass: process.env.sendinblue_pass,
+            },
+        })
+
+        const mailOptions = {
+            from: 'Mind-Connect <noreply@mindconnect-mails.com>',
+            to: email,
+            subject: 'Account Verification OTP',
+            html: `
+        <p>Your OTP to verify your account is:</p>
+        <h1>${otp}</h1>
+        <p>Please enter this OTP to verify your account.</p>
+        <p>Note that the OTP is only valid for 30 minutes.</p>
+      `,
+        }
+
+        await transporter.sendMail(mailOptions)
+    } catch (error) {
+        console.error(error)
+        throw new Error('Error sending account verification OTP')
+    }
+}
+
 export const sendResetPasswordOTP = async (email: string, otp: number) => {
     try {
         const transporter = nodemailer.createTransport({
