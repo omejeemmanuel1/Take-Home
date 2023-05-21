@@ -48,7 +48,10 @@ export const googleSignIn = async (req:Request, res:Response) => {
         mentalCondition:"",
         country:"",
         state:"" ,
-        password:""
+        password:"",
+        gender: "",    
+        otp:null,
+        otp_expiry:null,
          });
          
      const token = jwt.sign({ id: newUser.id }, JWT_SECRET_KEY,{ expiresIn: '30d' });
@@ -64,7 +67,9 @@ export const googleSignIn = async (req:Request, res:Response) => {
 
   
     } catch (error) {
+      console.log(error)
         return res.status(500).json({ Error: 'Internal Server Error' });
+
     }
   }
 
