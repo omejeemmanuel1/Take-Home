@@ -54,15 +54,14 @@ const register = async (req: Request, res: Response) => {
       verify: false
     });
 
-   console.log(newUser)
-
     const token = jwt.sign({ id: newUser.id, email }, process.env.JWT_TOKEN || 'SECRET-KEY', {
       expiresIn: '7d',
     });
 
-    const sendMailToUser = sendEmail(FROM_ADMIN_MAIL, newUser.email, 'OTP VERIFICATION', `YOUR OTP IS ${newUser.otp}`);
-    console.log(sendMailToUser);
-    newUser.verify = true
+    const otpVerificationLink = `${req.protocol}://${req.get('host')}/verify-otp?email=${newUser.email}&otp=${newUser.otp}`;
+    const emailContent = `Please verify your account by clicking the following link: <a href="${otpVerificationLink}">${otpVerificationLink}</a>`;
+    await sendEmail(FROM_ADMIN_MAIL, newUser.email, 'OTP Verification', emailContent);
+
 
     return res.status(201).json({
       userDetails: {
