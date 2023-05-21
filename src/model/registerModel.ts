@@ -13,6 +13,7 @@ export interface UserAttributes {
   password: string;
   otp: any|null;
   otp_expiry:Date|null;
+  verify: boolean | null;
 }
 
 class User extends Model<UserAttributes, UserAttributes> implements UserAttributes {
@@ -27,6 +28,7 @@ class User extends Model<UserAttributes, UserAttributes> implements UserAttribut
   state!: string;
   gender!: string;
   password!: string;
+  verify!: boolean | null;
 }
 
 User.init(
@@ -76,6 +78,10 @@ User.init(
       type: DataTypes.DATE,
       allowNull: true,
     },
+    verify: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+    }
   },
   {
     sequelize,

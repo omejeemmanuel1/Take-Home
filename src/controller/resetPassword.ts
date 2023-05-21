@@ -1,5 +1,4 @@
 import { Request, Response } from 'express'
-//import  User from '../model/resetPasswordModel'
 import  User from '../model/registerModel'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
