@@ -1,11 +1,11 @@
+// import necessary modules and dependencies
 import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User, { UserAttributes } from '../model/registerModel';
-import nodemailer from 'nodemailer';
-import { v4 as uuidv4 } from 'uuid';
 import { sendEmail } from '../utils/notifications';
-import { FROM_ADMIN_MAIL } from '../config/mail';
+import { FROM_ADMIN_MAIL, USER_SUBJECT } from '../config/mail';
+import { v4 as uuidv4 } from 'uuid';
 
 const register = async (req: Request, res: Response) => {
   const {
@@ -18,8 +18,6 @@ const register = async (req: Request, res: Response) => {
     gender,
     password,
     confirmPassword,
-    otp,
-    otp_expiry
   } = req.body;
 
   if (password !== confirmPassword) {
@@ -30,7 +28,7 @@ const register = async (req: Request, res: Response) => {
     const userExist = await User.findOne({ where: { email } });
 
     if (userExist) {
-      return res.status(404).send('This User already exist');
+      return res.status(404).send('This User already exists');
     }
 
     const encryptedPassword = await bcrypt.hash(password, 10);
@@ -51,7 +49,7 @@ const register = async (req: Request, res: Response) => {
       password: encryptedPassword,
       otp,
       otp_expiry: otpExpiry,
-      verify: false
+      verify: false,
     });
 
     const token = jwt.sign({ id: newUser.id, email }, process.env.JWT_TOKEN || 'SECRET-KEY', {
@@ -60,26 +58,27 @@ const register = async (req: Request, res: Response) => {
 
     const otpVerificationLink = `${req.protocol}://${req.get('host')}/verify-otp?email=${newUser.email}&otp=${newUser.otp}`;
     const emailContent = `Please verify your account by clicking the following link: <a href="${otpVerificationLink}">${otpVerificationLink}</a>`;
-    await sendEmail(FROM_ADMIN_MAIL, newUser.email, 'OTP Verification', emailContent);
 
+    await sendEmail(FROM_ADMIN_MAIL, newUser.email, USER_SUBJECT, emailContent);
 
     return res.status(201).json({
       userDetails: {
-         firstName: newUser.firstName,
-         lastName: newUser.lastName,
+        firstName: newUser.firstName,
+        lastName: newUser.lastName,
         email: newUser.email,
         mentalCondition: newUser.mentalCondition,
         country: newUser.country,
         state: newUser.state,
         gender: newUser.gender,
         token,
-       },
-     });
+      },
+    });
   } catch (err) {
     console.log(err);
-    return res.status(500).send('Error occurred please try again');
+    return res.status(500).send('An error occurred, please try again');
   }
 };
 
 export default register;
+
 
