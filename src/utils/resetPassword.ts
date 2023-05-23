@@ -5,13 +5,13 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 export const generateOtp = () => {
-    const otp = Math.floor(1000 + Math.random() * 9000)
-    const otp_expiry = new Date()
+    const otp = Math.floor(1000 + Math.random() * 9000);
+    const otp_expiry = new Date();
 
-    otp_expiry.setTime(new Date().getTime() + 30 * 60 * 1000)
+    otp_expiry.setTime(new Date().getTime() + 30 * 60 * 1000);
 
-    return { otp, otp_expiry }
-}
+    return { otp, otp_expiry };
+};
 
 
 export const sendVerificationOTP = async (email: string, otp: number) => {
@@ -86,7 +86,7 @@ export const generatePasswordResetToken = async (
     try {
         const token = jwt.sign(
             payload,
-            process.env.PASSWORD_RESET_SECRET as string,
+            process.env.JWT_SECRET_KEY as string,
             { expiresIn: '30min' }
         )
 
@@ -106,7 +106,7 @@ export const validatePasswordResetToken = async (token: string) => {
     try {
         const decodedToken: any = jwt.verify(
             token,
-            process.env.PASSWORD_RESET_SECRET as string
+            process.env.JWT_SECRET_KEY as string
         )
         const otp_expiry = new Date(decodedToken.otp_expiry)
         if (otp_expiry.getTime() < new Date().getTime()) {
