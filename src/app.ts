@@ -13,7 +13,12 @@ import { connectDb, sequelize } from './config/database';
 
 const app = express();
 
-app.use(cors({ origin: '*' }));
+app.use(
+  cors({
+    origin: true, // Replace with the actual origin of your frontend
+    credentials: true,
+  })
+);
 
 app.use(logger('dev'));
 app.use(express.json());
