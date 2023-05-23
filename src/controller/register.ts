@@ -1,3 +1,4 @@
+// import necessary modules and dependencies
 import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -26,6 +27,7 @@ export const register = async (req: Request, res: Response) => {
     const userExist = await User.findOne({ where: { email } });
 
     if (userExist) {
+      return res.status(404).send('This User already exists');
       return res.status(404).send('This User already exists');
     }
 
@@ -56,8 +58,8 @@ export const register = async (req: Request, res: Response) => {
 
     return res.status(201).json({
       userDetails: {
-         firstName: newUser.firstName,
-         lastName: newUser.lastName,
+        firstName: newUser.firstName,
+        lastName: newUser.lastName,
         email: newUser.email,
         mentalCondition: newUser.mentalCondition,
         country: newUser.country,
