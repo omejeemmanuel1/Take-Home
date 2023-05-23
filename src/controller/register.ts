@@ -28,7 +28,7 @@ export const register = async (req: Request, res: Response) => {
 
     if (userExist) {
       return res.status(404).send('This User already exists');
-      return res.status(404).send('This User already exists');
+    
     }
 
     const encryptedPassword = await bcrypt.hash(password, 10);
@@ -50,7 +50,7 @@ export const register = async (req: Request, res: Response) => {
       verify: false
     });
 
-    const token = jwt.sign({ id: newUser.id, email }, process.env.JWT_TOKEN || 'SECRET-KEY', {
+    const token = jwt.sign({ id: newUser.id, email }, process.env.JWT_SECRET_KEY || 'SECRET-KEY', {
       expiresIn: '7d',
     });
 
