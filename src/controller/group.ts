@@ -1,6 +1,12 @@
 const Group = require('../model/groupModel');
+
 const { v4: uuidv4 } = require('uuid');
 import { Request, Response } from 'express';
+
+interface User {
+    id: string;
+    email: string;
+  }
 
 const createGroup = async (req: Request, res: Response) => {
   const { groupName, about } = req.body;
@@ -11,7 +17,7 @@ const createGroup = async (req: Request, res: Response) => {
     return res.status(404).send('About is required');
   }
   try {
-    let userId = req.user;
+   const userId = req.user;
     if (!userId) {
       return res.status(404).send('You are not allowed to create a group');
     }
@@ -19,8 +25,11 @@ const createGroup = async (req: Request, res: Response) => {
       id: uuidv4(),
       groupName,
       about,
+      date: new Date(),
+      userId,
     });
     return res.status(201).json({
+      group,
       message: `${groupName} has been created`,
     });
   } catch (err) {
