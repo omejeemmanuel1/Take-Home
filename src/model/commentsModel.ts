@@ -1,19 +1,15 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../config/database';
-
+import Post from './postModel';
+import User from './registerModel';
 export interface CommentAttributes {
   id: string;
-  post_id: string;
-  user_id: string;
   comment: string;
+  user_id: string;
+  post_id: string;
 }
 
-class Comment extends Model<CommentAttributes, CommentAttributes> implements CommentAttributes {
-  id!: string;
-  post_id!: string;
-  user_id!: string;
-  comment!: string;
-}
+class Comment extends Model<CommentAttributes> {}
 
 Comment.init(
   {
@@ -22,18 +18,24 @@ Comment.init(
       primaryKey: true,
       allowNull: false,
     },
-    post_id: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    user_id: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
     comment: {
         type: DataTypes.STRING,
         allowNull: false,
-    }
+    },
+    user_id:{
+        type: DataTypes.STRING,
+        references: {
+          model: 'User',
+          key: 'id', 
+        },
+    },
+    post_id: {
+        type: DataTypes.STRING,
+        references: {
+          model: 'Post',
+          key: 'id',
+        }
+    },
   },
   {
     sequelize,
@@ -41,4 +43,11 @@ Comment.init(
     timestamps: true,
   }
 );
+
+Comment.belongsTo(Post, { foreignKey: 'postId'}); 
+Post.hasMany(Comment, { foreignKey: 'postId'});
+// Comment.belongsTo(User, { foreignKey: 'userId'}); 
+User.hasMany(Comment, { foreignKey: 'userId'});
+
+
 export default Comment;
