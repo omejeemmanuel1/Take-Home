@@ -33,9 +33,9 @@ export const Login = async (req: Request, res: Response) => {
     }
 
     // Check if user is verified
-    // if (!user.verify) {
-    //   return res.status(401).json({ Error: 'User not verified' });
-    // }
+    if (!user.verify) {
+      return res.status(401).json({ Error: 'User not verified' });
+    }
 
     // Generate token
     const token = jwt.sign({ id: user.id }, jwtSecret, { expiresIn: '30d' });
