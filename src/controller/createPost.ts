@@ -37,4 +37,76 @@ export const createPost = async (req: Request | any, res: Response) => {
   }
 };
 
+
+export const fetchAllPosts = async (req: Request, res: Response) => {
+  try {
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = 4;
+    const offset = (page - 1) * limit;
+
+    const { count, rows } = await Post.findAndCountAll({
+      limit: limit,
+      offset: offset,
+    });
+
+    if (count === 0) {
+      return res.status(404).json({
+        msg: 'No posts found',
+      });
+    }
+
+    return res.status(201).json({
+      msg: 'You have successfully retrieved all posts',
+      currentPage: page,
+      totalPages: Math.ceil(count / limit),
+      posts: rows,
+    });
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ 
+      msg: 'An error occurred while retrieving the posts'
+     });
+  }
+}
+
+
+export const fetchPostById = async (req: Request | any, res: Response) => {
+  try {
+    const { id } = req.params;
+    const post = await Post.findOne({ where: { id } });
+
+    if (!post) {
+      return res.status(404).json({
+        msg: 'The request post was not found'
+      });
+    }
+     return res.status(201).json({
+      post
+     });
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ Error: 'Internal Server Error' })
+  }
+}
+
+
+export const fetchPostsByUser = async (req: Request | any, res: Response) => {
+    try {
+      const verified = req.user;
+
+      const posts = await Post.findAll({
+        where: { userId: verified.id }
+      })
+
+      return res.status(201).json({
+        msg: 'Posts retrieved successfully',
+        posts
+      })
+    } catch(error) {
+      res.status(500).json({ Error: 'Internal Server Error' });
+    }
+};
+
   
