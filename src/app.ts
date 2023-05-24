@@ -7,7 +7,7 @@ import resetRouter from "./routes/resetPassword";
 import googleRouter from "./routes/google";
 import postRoute from "./routes/posts";
 import cors from 'cors';
-
+import commentRouter from "./routes/comments"
 
 import registerRouter from './routes/register';
 const groupRouter = require("./routes/group");
@@ -39,6 +39,7 @@ app.use('/auth', googleRouter);
 app.use('/user', resetRouter);
 app.use("/group", groupRouter)
 app.use('/post', postRoute)
+app.use('/comment', commentRouter)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
