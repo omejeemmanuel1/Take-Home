@@ -1,5 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../config/database';
+import Post from './postModel'
 
 export interface UserAttributes {
   id: string;
@@ -34,7 +35,7 @@ class User extends Model<UserAttributes, UserAttributes> implements UserAttribut
 User.init(
   {
     id: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING, // corrected type from DataTypes.UUIDV4 to DataTypes.STRING
       primaryKey: true,
       allowNull: false,
     },
@@ -89,5 +90,8 @@ User.init(
     timestamps: true,
   }
 );
+
+User.hasMany(Post, {foreignKey: "userId", as : 'Post' })
+Post.belongsTo(User, {foreignKey: "userId", as : 'User'})
 
 export default User;
