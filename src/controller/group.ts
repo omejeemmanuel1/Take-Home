@@ -12,9 +12,9 @@ const createGroup = async (req: Request, res: Response) => {
   }
   try {
     let userId = req.user;
-    // if (!userId) {
-    //   return res.status(404).send('You are not allowed to create a group');
-    // }
+    if (!userId) {
+      return res.status(404).send('You are not allowed to create a group');
+    }
     const group = await Group.create({
       id: uuidv4(),
       groupName,
