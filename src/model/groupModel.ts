@@ -1,5 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../config/database';
+import User from '../model/registerModel'; 
 
 export interface GroupAttributes {
   id: string;
@@ -35,4 +36,8 @@ Group.init(
     timestamps: true,
   }
 );
-export default Group;
+
+// Add the association
+Group.belongsTo(User, { foreignKey: 'userId' }); 
+
+module.exports = Group
