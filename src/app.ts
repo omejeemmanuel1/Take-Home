@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import resetRouter from "./routes/resetPassword";
 import googleRouter from "./routes/google";
+import postRoute from "./routes/posts";
 import cors from 'cors';
 
 
@@ -35,6 +36,8 @@ app.use((req, res, next) => {
 app.use('/user', registerRouter);
 app.use('/auth', googleRouter);
 app.use('/user', resetRouter);
+app.use('/post', postRoute)
+
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));

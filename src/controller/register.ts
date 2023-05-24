@@ -82,26 +82,26 @@ export const verifyOTP = async (req: Request, res: Response) => {
     const user = await User.findOne({ where: { otp } });
 
     if (!user) {
-      return res.status(404).send('User not found');
+      return res.status(404).json({Error: 'User not found'});
     }
 
     if (user.verify) {
-      return res.status(400).send('User already verified');
+      return res.status(400).json({Error: 'User already verified'});
     }
 
     const currentTime = new Date();
     if (currentTime > user.otp_expiry) {
-      return res.status(400).send('OTP has expired');
+      return res.status(400).json({Error: 'OTP has expired'});
     }
 
     // Update user verification status
     user.verify = true;
     await user.save();
 
-    return res.status(200).send('OTP verified successfully');
+    return res.status(200).json({message: 'OTP verified successfully'});
   } catch (err) {
     console.log(err);
-    return res.status(500).send('An error occurred, please try again');
+    return res.status(500).json({Error: 'An error occurred, please try again'});
   }
 };
 
