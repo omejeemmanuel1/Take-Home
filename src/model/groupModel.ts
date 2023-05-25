@@ -27,7 +27,11 @@ const Group = sequelize.define("Group", {
       model: User,
       key: "id"
     }
-  }
+  },
+  users: {
+    type: Sequelize.ARRAY(Sequelize.UUIDV4),
+    defaultValue: [],
+  },
 });
 
 module.exports = Group
