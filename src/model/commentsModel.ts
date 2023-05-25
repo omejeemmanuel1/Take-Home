@@ -25,14 +25,14 @@ Comment.init(
     user_id:{
         type: DataTypes.STRING,
         references: {
-          model: 'User',
+          model: User,
           key: 'id', 
         },
     },
     post_id: {
-        type: DataTypes.STRING,
+        type: DataTypes.UUID,
         references: {
-          model: 'Post',
+          model: Post,
           key: 'id',
         }
     },
@@ -44,10 +44,10 @@ Comment.init(
   }
 );
 
-Comment.belongsTo(Post, { foreignKey: 'postId'}); 
-Post.hasMany(Comment, { foreignKey: 'postId'});
-// Comment.belongsTo(User, { foreignKey: 'userId'}); 
-User.hasMany(Comment, { foreignKey: 'userId'});
+Comment.belongsTo(Post, { foreignKey: 'post_id'}); 
+Post.hasMany(Comment, { foreignKey: 'post_id', as: 'comments'});
+Comment.belongsTo(User, { foreignKey: 'user_id'}); 
+User.hasMany(Comment, { foreignKey: 'user_id'});
 
 
 export default Comment;
