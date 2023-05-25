@@ -1,43 +1,33 @@
 import { DataTypes, Model } from 'sequelize';
+const Sequelize = require("sequelize");
 import { sequelize } from '../config/database';
 import User from '../model/registerModel'; 
 
-export interface GroupAttributes {
-  id: string;
-  groupName: string;
-  about: string;
-}
-
-class Group extends Model<GroupAttributes, GroupAttributes> implements GroupAttributes {
-  id!: string;
-  groupName!: string;
-  about!: string;
-}
-
-Group.init(
-  {
-    id: {
-      type: DataTypes.STRING,
-      primaryKey: true,
-      allowNull: false,
-    },
-    groupName: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    about: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
+const Group = sequelize.define("Group", {
+  id: {
+    type: Sequelize.UUIDV4,
+    primaryKey: true
   },
-  {
-    sequelize,
-    modelName: 'Group',
-    timestamps: true,
+  groupName: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  about: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  date: {
+    type: Sequelize.DATE,
+    allowNull: false,
+  },
+  userId: {
+    type: Sequelize.UUIDV4,
+    allowNull: false,
+    references: {
+      model: User,
+      key: "id"
+    }
   }
-);
-
-// Add the association
-Group.belongsTo(User, { foreignKey: 'userId' }); 
+});
 
 module.exports = Group
