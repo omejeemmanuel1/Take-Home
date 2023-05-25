@@ -9,6 +9,7 @@ import cors from 'cors';
 
 
 import registerRouter from './routes/register';
+import groupRouter from './routes/groups';
 import { connectDb, sequelize } from './config/database';
 
 const app = express();
@@ -35,6 +36,7 @@ app.use((req, res, next) => {
 app.use('/user', registerRouter);
 app.use('/auth', googleRouter);
 app.use('/user', resetRouter);
+app.use('/groups', groupRouter)
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));

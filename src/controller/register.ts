@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User, { UserAttributes } from '../model/registerModel';
+
 import { v4 as uuidv4 } from 'uuid';
 import { generateOtp, sendVerificationOTP } from '../utils/resetPassword';
 
