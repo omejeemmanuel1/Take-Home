@@ -4,9 +4,9 @@ const { v4: uuidv4 } = require('uuid');
 import { Request, Response } from 'express';
 
 interface User {
-    id: string;
-    email: string;
-  }
+  id: string;
+  email: string;
+}
 
 const createGroup = async (req: Request, res: Response) => {
   const { groupName, about } = req.body;
@@ -17,7 +17,7 @@ const createGroup = async (req: Request, res: Response) => {
     return res.status(404).send('About is required');
   }
   try {
-   const userId = req.user;
+    const userId = req.user;
     if (!userId) {
       return res.status(404).send('You are not allowed to create a group');
     }
@@ -40,4 +40,24 @@ const createGroup = async (req: Request, res: Response) => {
   }
 };
 
-module.exports = { createGroup };
+const getGroupById = async (req: Request, res: Response) => {
+  const groupId = req.params.id;
+  try {
+    const group = await Group.findById(groupId);
+    if (!group) {
+      return res.status(404).json({
+        message: 'Group not found',
+      });
+    }
+    return res.status(200).json({
+      group,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      err: 'Server Error',
+    });
+  }
+};
+
+module.exports = { createGroup, getGroupById };
