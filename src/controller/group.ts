@@ -60,4 +60,33 @@ const getGroupById = async (req: Request, res: Response) => {
   }
 };
 
-module.exports = { createGroup, getGroupById };
+const joinGroup = async (req: Request, res: Response) => {
+  const groupId = req.params.id;
+  const userId = req.user;
+  try {
+    const group = await Group.findById(groupId);
+    if (!group) {
+      return res.status(404).json({
+        message: 'Group not found',
+      });
+    }
+    if (group.users.includes(userId)) {
+      return res.status(404).json({
+        message: 'You are already a member of the group',
+      });
+    }
+    group.users.push(userId);
+    await group.save();
+    return res.status(200).json({
+      message: 'You have joined the group successfully',
+      group,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      err: 'Server Error',
+    });
+  }
+};
+
+module.exports = { createGroup, getGroupById, joinGroup };
