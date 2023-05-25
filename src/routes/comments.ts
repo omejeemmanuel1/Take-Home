@@ -5,7 +5,7 @@ import { auth } from "../middleware/auth";
 // import authenticatedUser from "../middleware/index";
 const router = express.Router();
 
-router.post('/', auth, createComment);
+router.post('/create-comment', auth, createComment);
 router.get('/', auth, fetchComments);
 router.delete('/:commentId', auth, deleteComment);
 
