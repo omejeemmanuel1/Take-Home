@@ -1,7 +1,7 @@
-import { Request, Response } from "express";
-import { v4 as uuidv4 } from "uuid";
-import { createPostSchema, options } from "../utils/utils";
-import Post from "../model/postModel"
+import { Request, Response } from 'express';
+import { v4 as uuidv4 } from 'uuid';
+import { createPostSchema, options } from '../utils/utils';
+import Post from '../model/postModel';
 
 export const createPost = async (req: Request | any, res: Response) => {
   try {
@@ -37,19 +37,11 @@ export const createPost = async (req: Request | any, res: Response) => {
   }
 };
 
-
 export const fetchAllPosts = async (req: Request, res: Response) => {
   try {
-    const page = parseInt(req.query.page as string) || 1;
-    const limit = 4;
-    const offset = (page - 1) * limit;
+    const posts = await Post.findAll();
 
-    const { count, rows } = await Post.findAndCountAll({
-      limit: limit,
-      offset: offset,
-    });
-
-    if (count === 0) {
+    if (posts.length === 0) {
       return res.status(404).json({
         msg: 'No posts found',
       });
@@ -57,19 +49,15 @@ export const fetchAllPosts = async (req: Request, res: Response) => {
 
     return res.status(201).json({
       msg: 'You have successfully retrieved all posts',
-      currentPage: page,
-      totalPages: Math.ceil(count / limit),
-      posts: rows,
+      posts,
     });
-
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ 
-      msg: 'An error occurred while retrieving the posts'
-     });
+    return res.status(500).json({
+      msg: 'An error occurred while retrieving the posts',
+    });
   }
-}
-
+};
 
 export const fetchPostById = async (req: Request | any, res: Response) => {
   try {
@@ -78,35 +66,31 @@ export const fetchPostById = async (req: Request | any, res: Response) => {
 
     if (!post) {
       return res.status(404).json({
-        msg: 'The request post was not found'
+        msg: 'The request post was not found',
       });
     }
-     return res.status(201).json({
-      post
-     });
-
+    return res.status(201).json({
+      post,
+    });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ Error: 'Internal Server Error' })
+    return res.status(500).json({ Error: 'Internal Server Error' });
   }
-}
-
-
-export const fetchPostsByUser = async (req: Request | any, res: Response) => {
-    try {
-      const verified = req.user;
-
-      const posts = await Post.findAll({
-        where: { userId: verified.id }
-      })
-
-      return res.status(201).json({
-        msg: 'Posts retrieved successfully',
-        posts
-      })
-    } catch(error) {
-      res.status(500).json({ Error: 'Internal Server Error' });
-    }
 };
 
-  
+export const fetchPostsByUser = async (req: Request | any, res: Response) => {
+  try {
+    const verified = req.user;
+
+    const posts = await Post.findAll({
+      where: { userId: verified.id },
+    });
+
+    return res.status(201).json({
+      msg: 'Posts retrieved successfully',
+      posts,
+    });
+  } catch (error) {
+    res.status(500).json({ Error: 'Internal Server Error' });
+  }
+};
