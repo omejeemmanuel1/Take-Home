@@ -16,7 +16,7 @@ class Post extends Model<PostAttributes, PostAttributes> implements PostAttribut
   id!: string;
   userId!: string;
   postContent!: string;
-  like!: number;
+  like!: any;
   comment!: number;
   reply!: number;
   report!: number;
