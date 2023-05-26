@@ -1,7 +1,24 @@
-const Group = require('../model/groupModel');
-
-const { v4: uuidv4 } = require('uuid');
 import { Request, Response } from 'express';
+const { v4: uuidv4 } = require('uuid');
+import Group from '../model/groupModel';
+
+
+export const getAllGroups = async (req: Request, res: Response) => {
+try {
+const group = await Group.findAll()
+return res.status(200).json({
+message: ' All group have been successfully fetch',
+result: group
+});
+}catch(err){
+console.error(err)
+return res.status(500).json({
+    error: err
+    
+})
+}
+}
+
 
 interface User {
   id: string;

@@ -12,6 +12,9 @@ export interface GroupAttributes {
 }
 
 class Group extends Model<GroupAttributes, GroupAttributes> implements GroupAttributes {
+  static findById(groupId: string) {
+    throw new Error("Method not implemented.");
+  }
   id!: string;
   userId!: string;
   groupName!: string;
@@ -51,7 +54,7 @@ Group.init(
     users: {
       type: DataTypes.ARRAY(DataTypes.UUID),
       defaultValue: [],
-      },
+    },
   },
   {
     sequelize,
@@ -61,6 +64,3 @@ Group.init(
 );
 
 export default Group;
-
-
-
