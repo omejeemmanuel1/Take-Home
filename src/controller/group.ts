@@ -1,7 +1,25 @@
+
+import { Request, Response } from 'express';
+const { v4: uuidv4 } = require('uuid');
+import Group, { GroupAttributes} from '../model/groupModel';
 const Group = require('../model/groupModel');
 
-const { v4: uuidv4 } = require('uuid');
-import { Request, Response } from 'express';
+export const getAllGroups = async (req: Request, res: Response) => {
+try {
+const group = await Group.findAll()
+return res.status(200).json({
+message: ' All group have been successfully fetch',
+result: group
+});
+}catch(err){
+console.error(err)
+return res.status(500).json({
+    error: err
+    
+})
+}
+}
+
 
 interface User {
   id: string;
@@ -60,4 +78,62 @@ const getGroupById = async (req: Request, res: Response) => {
   }
 };
 
-module.exports = { createGroup, getGroupById };
+const joinGroup = async (req: Request, res: Response) => {
+  const groupId = req.params.id;
+  const userId = req.user;
+  try {
+    const group = await Group.findById(groupId);
+    if (!group) {
+      return res.status(404).json({
+        message: 'Group not found',
+      });
+    }
+    if (group.users.includes(userId)) {
+      return res.status(404).json({
+        message: 'You are already a member of the group',
+      });
+    }
+    group.users.push(userId);
+    await group.save();
+    return res.status(200).json({
+      message: 'You have joined the group successfully',
+      group,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      err: 'Server Error',
+    });
+  }
+};
+
+const leaveGroup = async (req: Request, res: Response) => {
+  const groupId = req.params.id;
+  const userId = req.user;
+  try {
+    const group = await Group.findById(groupId);
+    if (!group) {
+      return res.status(404).json({
+        message: 'Group not found',
+      });
+    }
+    if (!group.users.includes(userId)) {
+      return res.status(404).json({
+        message: 'You are not a member of this group',
+      });
+    }
+    group.users = group.users.filter((id: string) => id !== userId);
+    await group.save();
+    return res.status(200).json({
+      message: 'You have left the group successfully',
+      group,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      err: 'Server Error',
+    });
+  }
+};
+
+module.exports = { createGroup, getGroupById, joinGroup, leaveGroup };
