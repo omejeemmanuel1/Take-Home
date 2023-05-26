@@ -7,7 +7,7 @@ export interface GroupAttributes {
   userId: string;
   groupName: string;
   about: string;
-  date: Date;
+  date: string;
   users: string[];
 }
 
@@ -16,7 +16,7 @@ class Group extends Model<GroupAttributes, GroupAttributes> implements GroupAttr
   userId!: string;
   groupName!: string;
   about!: string;
-  date!: Date;
+  date!: string;
   users!: string[];
 }
 
