@@ -1,6 +1,7 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../config/database';
-import Post from './postModel'
+import Post from './postModel';
+import Group from './groupModel';
 
 export interface UserAttributes {
   id: string;
@@ -89,6 +90,7 @@ User.init(
       type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: true,
     },
+
   },
   {
     sequelize,
@@ -97,7 +99,9 @@ User.init(
   }
 );
 
-User.hasMany(Post, {foreignKey: "userId", as : 'Post' })
-Post.belongsTo(User, {foreignKey: "userId", as : 'User'})
+User.hasMany(Post, { foreignKey: 'userId', as: 'Post' });
+Post.belongsTo(User, { foreignKey: 'userId', as: 'User' });
+User.hasMany(Group, { foreignKey: 'userId', as: 'Group' });
+Group.belongsTo(User, {foreignKey: "userId", as: "User"})
 
 export default User;

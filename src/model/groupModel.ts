@@ -1,25 +1,40 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../config/database';
-import User from '../model/registerModel'; 
+import User from './registerModel';
 
 export interface GroupAttributes {
   id: string;
+  userId: string;
   groupName: string;
   about: string;
+  date: string;
+  users: string[];
 }
 
 class Group extends Model<GroupAttributes, GroupAttributes> implements GroupAttributes {
   id!: string;
+  userId!: string;
   groupName!: string;
   about!: string;
+  date!: string;
+  users!: string[];
 }
 
 Group.init(
   {
     id: {
-      type: DataTypes.STRING,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
       allowNull: false,
+    },
+    userId: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      references: {
+        model: User,
+        key: 'id',
+      },
     },
     groupName: {
       type: DataTypes.STRING,
@@ -29,6 +44,14 @@ Group.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    date: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    users: {
+      type: DataTypes.ARRAY(DataTypes.UUID),
+      defaultValue: [],
+      },
   },
   {
     sequelize,
@@ -37,7 +60,7 @@ Group.init(
   }
 );
 
-// Add the association
-Group.belongsTo(User, { foreignKey: 'userId' }); 
+export default Group;
 
-module.exports = Group
+
+
