@@ -30,7 +30,7 @@ Comment.init(
         },
     },
     post_id: {
-        type: DataTypes.UUID,
+        type: DataTypes.CHAR,
         references: {
           model: Post,
           key: 'id',
