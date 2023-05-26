@@ -71,25 +71,25 @@ export const fetchAllPosts = async (req: Request, res: Response) => {
 }
 
 
-// export const fetchPostById = async (req: Request | any, res: Response) => {
-//   try {
-//     const { id } = req.params;
-//     const post = await Post.findOne({ where: { id } });
+export const fetchPostById = async (req: Request | any, res: Response) => {
+  try {
+    const { id } = req.params;
+    const post = await Post.findOne({ where: { id } });
 
-//     if (!post) {
-//       return res.status(404).json({
-//         msg: 'The request post was not found'
-//       });
-//     }
-//      return res.status(201).json({
-//       post
-//      });
+    if (!post) {
+      return res.status(404).json({
+        msg: 'The request post was not found'
+      });
+    }
+     return res.status(201).json({
+      post
+     });
 
-//   } catch (error) {
-//     console.log(error);
-//     return res.status(500).json({ Error: 'Internal Server Error' })
-//   }
-// }
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ Error: 'Internal Server Error' })
+  }
+}
 
 
 export const fetchPostsByUser = async (req: Request | any, res: Response) => {
