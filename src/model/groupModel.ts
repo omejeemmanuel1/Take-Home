@@ -1,37 +1,66 @@
 import { DataTypes, Model } from 'sequelize';
-const Sequelize = require("sequelize");
 import { sequelize } from '../config/database';
-import User from '../model/registerModel'; 
+import User from './registerModel';
 
-const Group = sequelize.define("Group", {
-  id: {
-    type: Sequelize.UUIDV4,
-    primaryKey: true
-  },
-  groupName: {
-    type: Sequelize.STRING,
-    allowNull: false,
-  },
-  about: {
-    type: Sequelize.STRING,
-    allowNull: false,
-  },
-  date: {
-    type: Sequelize.DATE,
-    allowNull: false,
-  },
-  userId: {
-    type: Sequelize.UUIDV4,
-    allowNull: false,
-    references: {
-      model: User,
-      key: "id"
-    }
-  },
-  users: {
-    type: Sequelize.ARRAY(Sequelize.UUIDV4),
-    defaultValue: [],
-  },
-});
+export interface GroupAttributes {
+  id: string;
+  userId: string;
+  groupName: string;
+  about: string;
+  date: string;
+  users: string[];
+}
 
-module.exports = Group
+class Group extends Model<GroupAttributes, GroupAttributes> implements GroupAttributes {
+  id!: string;
+  userId!: string;
+  groupName!: string;
+  about!: string;
+  date!: string;
+  users!: string[];
+}
+
+Group.init(
+  {
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true,
+      allowNull: false,
+    },
+    userId: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      references: {
+        model: User,
+        key: 'id',
+      },
+    },
+    groupName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    about: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    date: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    users: {
+      type: DataTypes.ARRAY(DataTypes.UUID),
+      defaultValue: [],
+      },
+  },
+  {
+    sequelize,
+    modelName: 'Group',
+    timestamps: true,
+  }
+);
+
+export default Group;
+
+
+
