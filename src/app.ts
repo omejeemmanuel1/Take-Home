@@ -10,7 +10,9 @@ import cors from 'cors';
 import commentRouter from "./routes/comments"
 
 import registerRouter from './routes/register';
+
 const groupRouter = require("./routes/group");
+
 import { connectDb, sequelize } from './config/database';
 
 const app = express();
@@ -37,6 +39,7 @@ app.use((req, res, next) => {
 app.use('/user', registerRouter);
 app.use('/auth', googleRouter);
 app.use('/user', resetRouter);
+
 app.use("/group", groupRouter)
 app.use('/post', postRoute)
 app.use('/comment', commentRouter)
