@@ -16,6 +16,7 @@ export interface UserAttributes {
   otp: any | null;
   otp_expiry: Date | null;
   verify: boolean | null;
+  blocked: string[];
 }
 
 class User extends Model<UserAttributes, UserAttributes> implements UserAttributes {
@@ -31,6 +32,7 @@ class User extends Model<UserAttributes, UserAttributes> implements UserAttribut
   gender!: string;
   password!: string;
   verify!: boolean | null;
+  blocked: string[] = [];
 }
 
 User.init(
@@ -84,6 +86,11 @@ User.init(
       type: DataTypes.BOOLEAN,
       allowNull: true,
     },
+    blocked: {
+      type: DataTypes.ARRAY(DataTypes.STRING),
+      allowNull: true,
+    },
+
   },
   {
     sequelize,
