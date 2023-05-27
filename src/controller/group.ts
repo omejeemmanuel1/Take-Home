@@ -1,7 +1,6 @@
 
 import { Request, Response } from 'express';
 const { v4: uuidv4 } = require('uuid');
-import Group, { GroupAttributes} from '../model/groupModel';
 const Group = require('../model/groupModel');
 
 export const getAllGroups = async (req: Request, res: Response) => {
@@ -26,7 +25,7 @@ interface User {
   email: string;
 }
 
-const createGroup = async (req: Request, res: Response) => {
+export const createGroup = async (req: Request, res: Response) => {
   const { groupName, about } = req.body;
   if (!groupName) {
     return res.status(404).send('Group Name is required');
@@ -57,8 +56,7 @@ const createGroup = async (req: Request, res: Response) => {
     });
   }
 };
-
-const getGroupById = async (req: Request, res: Response) => {
+ export const getGroupById = async (req: Request, res: Response) => {
   const groupId = req.params.id;
   try {
     const group = await Group.findById(groupId);
@@ -78,7 +76,7 @@ const getGroupById = async (req: Request, res: Response) => {
   }
 };
 
-const joinGroup = async (req: Request, res: Response) => {
+export const joinGroup = async (req: Request, res: Response) => {
   const groupId = req.params.id;
   const userId = req.user;
   try {
@@ -107,7 +105,7 @@ const joinGroup = async (req: Request, res: Response) => {
   }
 };
 
-const leaveGroup = async (req: Request, res: Response) => {
+export const leaveGroup = async (req: Request, res: Response) => {
   const groupId = req.params.id;
   const userId = req.user;
   try {
@@ -136,4 +134,3 @@ const leaveGroup = async (req: Request, res: Response) => {
   }
 };
 
-module.exports = { createGroup, getGroupById, joinGroup, leaveGroup };

@@ -75,32 +75,50 @@ export const sendResetPasswordOTP = async (email: string, otp: number) => {
     }
 }
 
-export const generatePasswordResetToken = async (
-    email: string,
-    res: Response | any
-) => {
-    const payload = {
-        email: email,
-    }
+// export const generatePasswordResetToken = async (
+//     email: string,
+//     res: Response | any
+// ) => {
+//     const payload = {
+//         email: email,
+//     }
 
-    try {
-        const token = jwt.sign(
-            payload,
-            process.env.JWT_SECRET_KEY as string,
-            { expiresIn: '30min' }
-        )
+//     try {
+//         const token = jwt.sign(
+//             payload,
+//             process.env.JWT_SECRET_KEY as string,
+//             { expiresIn: '30min' }
+//         )
 
-        res.cookie('token', token, {
-            httpOnly: true,
-            maxAge: 30 * 60 * 1000,
-        })
+//         res.cookie('token', token, {
+//             httpOnly: true,
+//             maxAge: 30 * 60 * 1000,
+//         })
 
-        return token
-    } catch (error) {
-        console.error(error)
-        throw new Error('Error generating password reset token')
-    }
-}
+//         return token
+//     } catch (error) {
+//         console.error(error)
+//         throw new Error('Error generating password reset token')
+//     }
+// }
+
+export const generatePasswordResetToken = async (email: string) => {
+  const payload = {
+    email: email,
+  };
+
+  try {
+    const token = jwt.sign(payload, process.env.JWT_SECRET_KEY as string, {
+      expiresIn: '30min',
+    });
+
+    return token;
+  } catch (error) {
+    console.error(error);
+    throw new Error('Error generating password reset token');
+  }
+};
+
 
 export const validatePasswordResetToken = async (token: string) => {
     try {

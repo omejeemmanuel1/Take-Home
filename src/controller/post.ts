@@ -1,11 +1,23 @@
 import { Request, Response } from "express";
 import { v4 as uuidv4 } from "uuid";
 import { createPostSchema, options } from "../utils/utils";
-import Post from "../model/postModel"
+import Post from "../model/postModel";
+import jwt, { Secret } from 'jsonwebtoken';
 
 export const createPost = async (req: Request | any, res: Response) => {
   try {
-    const verified = req.user;
+    const token = req.headers.authorization?.split(' ')[1]; // Extract the token from the Authorization header
+
+    if (!token) {
+      return res.status(401).json({ Error: 'Unauthorized' });
+    }
+
+    const verified = jwt.verify(token, process.env.JWT_SECRET_KEY as Secret); // Verify the token
+
+    if (!verified) {
+      return res.status(401).json({ Error: 'Token not valid' });
+    }
+
     const id = uuidv4();
 
     // Validate the post data
@@ -15,11 +27,7 @@ export const createPost = async (req: Request | any, res: Response) => {
       return res.status(400).json({ Error: validateResult.error.details[0].message });
     }
 
-    const userId = verified?.id; // Extract the id from verified
-
-    if (!userId) {
-      return res.status(400).json({ Error: 'Invalid user ID' });
-    }
+    const userId = (verified as { id: string }).id; // Extract the id from verified
 
     const postRecord = await Post.create({
       id,
@@ -37,7 +45,6 @@ export const createPost = async (req: Request | any, res: Response) => {
   }
 };
 
-  
 export const togglePostVisibility = async (req: Request, res: Response) => {
   try {
     const { postId } = req.params;
@@ -64,4 +71,3 @@ export const togglePostVisibility = async (req: Request, res: Response) => {
     return res.status(500).json({ Error: 'Internal Server Error' });
   }
 };
-

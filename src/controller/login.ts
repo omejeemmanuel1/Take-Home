@@ -40,8 +40,6 @@ export const Login = async (req: Request, res: Response) => {
     // Generate token
     const token = jwt.sign({ id: user.id }, jwtSecret, { expiresIn: '30d' });
 
-    res.cookie('token', token, { httpOnly: true, maxAge: 30 * 60 * 1000 });
-
     return res.status(200).json({
       msg: 'User logged in successfully',
       user,
@@ -53,4 +51,3 @@ export const Login = async (req: Request, res: Response) => {
     return res.status(500).json({ Error: 'Something went wrong' });
   }
 };
-

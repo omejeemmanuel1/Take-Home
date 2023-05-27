@@ -59,7 +59,8 @@ export const register = async (req: Request, res: Response) => {
     await sendVerificationOTP(newUser.email, newUser.otp);
 
     return res.status(201).json({
-      userDetails:newUser
+      userDetails:newUser,
+      token
      });
   } catch (err) {
     console.log(err);

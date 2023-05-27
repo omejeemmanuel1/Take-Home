@@ -78,4 +78,5 @@ Post.init(
   }
 );
 
+
 export default Post;
