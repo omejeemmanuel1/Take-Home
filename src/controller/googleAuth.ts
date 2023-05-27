@@ -51,21 +51,22 @@ export const googleSignIn = async (req:Request, res:Response) => {
         password:"",
         gender: "",    
         otp:null,
-        otp_expiry:null,
-        verify: true
+        otp_expiry: null,
+        blocked: []
+        // verify: true
          });
          
      const token = jwt.sign({ id: newUser.id }, JWT_SECRET_KEY,{ expiresIn: '30d' });
      res.cookie('token', token, { httpOnly: true, maxAge: 30 * 24 * 60 * 60 * 1000 });  
     //  return res.status(200).json({ message: 'User registered successfully' });
-    res.redirect("http://localhost:5174")
+    res.redirect("http://localhost:5173")
      }
      
      const token = jwt.sign({ id: user?.id }, JWT_SECRET_KEY,{ expiresIn: '30d' });
      res.cookie('token', token, { httpOnly: true, maxAge: 30 * 24 * 60 * 60 * 1000 });
     
     //  return res.status(200).json({ message: 'User already in database' });
-    res.redirect("http://localhost:5174")
+    res.redirect("http://localhost:5173")
     
   
     } catch (error) {

@@ -1,5 +1,7 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../config/database';
+import Post from './postModel';
+import Group from './groupModel';
 
 export interface UserAttributes {
   id: string;
@@ -11,9 +13,10 @@ export interface UserAttributes {
   state: string;
   gender: string;
   password: string;
-  otp: any|null;
-  otp_expiry:Date|null;
+  otp: any | null;
+  otp_expiry: Date | null;
   verify: boolean | null;
+  blocked: string[];
 }
 
 class User extends Model<UserAttributes, UserAttributes> implements UserAttributes {
@@ -29,12 +32,13 @@ class User extends Model<UserAttributes, UserAttributes> implements UserAttribut
   gender!: string;
   password!: string;
   verify!: boolean | null;
+  blocked: string[] = [];
 }
 
 User.init(
   {
     id: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING, // corrected type from DataTypes.UUIDV4 to DataTypes.STRING
       primaryKey: true,
       allowNull: false,
     },
@@ -64,7 +68,7 @@ User.init(
     },
     gender: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
     password: {
       type: DataTypes.STRING,
@@ -81,7 +85,12 @@ User.init(
     verify: {
       type: DataTypes.BOOLEAN,
       allowNull: true,
-    }
+    },
+    blocked: {
+      type: DataTypes.ARRAY(DataTypes.STRING),
+      allowNull: true,
+    },
+
   },
   {
     sequelize,
@@ -89,5 +98,10 @@ User.init(
     timestamps: true,
   }
 );
+
+User.hasMany(Post, { foreignKey: 'userId', as: 'Post' });
+Post.belongsTo(User, { foreignKey: 'userId', as: 'User' });
+User.hasMany(Group, { foreignKey: 'userId', as: 'Group' });
+Group.belongsTo(User, {foreignKey: "userId", as: "User"})
 
 export default User;

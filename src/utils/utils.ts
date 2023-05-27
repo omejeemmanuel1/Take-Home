@@ -5,6 +5,13 @@ export const loginUserSchema = Joi.object().keys({
     password: Joi.string().trim().regex(/^[a-zA-Z0-9]{3,30}$/).required()
 })
 
+export const createPostSchema = Joi.object().keys({
+    postContent: Joi.string().required()
+})
+export const updatePostSchema = Joi.object().keys({
+    postContent: Joi.string().required()
+})
+
 export const options = {
     abortEarly:false,
     errors:{
