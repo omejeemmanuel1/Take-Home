@@ -10,6 +10,7 @@ const registerSchema = Joi.object({
   gender: Joi.string().required(),
   password: Joi.string().min(4).max(100).required(),
   confirmPassword: Joi.string().min(4).max(100).required(),
+  blocked: Joi.array().items(Joi.string())
 });
 
 export default registerSchema;

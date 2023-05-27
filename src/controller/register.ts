@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User, { UserAttributes } from '../model/registerModel';
+
 import { v4 as uuidv4 } from 'uuid';
 import { generateOtp, sendVerificationOTP } from '../utils/resetPassword';
 
@@ -47,7 +48,8 @@ export const register = async (req: Request, res: Response) => {
       password: encryptedPassword,
       otp,
       otp_expiry,
-      verify: false
+      verify: false,
+      blocked:[]
     });
 
     const token = jwt.sign({ id: newUser.id, email }, process.env.JWT_SECRET_KEY || 'SECRET-KEY', {
@@ -57,17 +59,7 @@ export const register = async (req: Request, res: Response) => {
     await sendVerificationOTP(newUser.email, newUser.otp);
 
     return res.status(201).json({
-      userDetails: {
-        firstName: newUser.firstName,
-        lastName: newUser.lastName,
-        email: newUser.email,
-        mentalCondition: newUser.mentalCondition,
-        country: newUser.country,
-        state: newUser.state,
-        gender: newUser.gender,
-        token,
-        otp
-       },
+      userDetails:newUser
      });
   } catch (err) {
     console.log(err);

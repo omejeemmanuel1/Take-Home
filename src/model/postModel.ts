@@ -10,6 +10,7 @@ export interface PostAttributes {
   comment: number;
   reply: number;
   report: number;
+  visible: boolean;
 }
 
 class Post extends Model<PostAttributes, PostAttributes> implements PostAttributes {
@@ -20,6 +21,7 @@ class Post extends Model<PostAttributes, PostAttributes> implements PostAttribut
   comment!: number;
   reply!: number;
   report!: number;
+  visible!: boolean;
 }
 
 Post.init(
@@ -62,6 +64,12 @@ Post.init(
       allowNull: false,
       defaultValue: 0,
     },
+    visible: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: true, // or false, depending on your default visibility preference
+      },
+      
   },
   {
     sequelize,

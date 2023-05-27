@@ -87,3 +87,31 @@ export const likePost = async (req: Request, res: Response) => {
 
 
 
+  
+export const togglePostVisibility = async (req: Request, res: Response) => {
+  try {
+    const { postId } = req.params;
+
+    // Find the post by postId
+    const post = await Post.findByPk(postId);
+
+    if (!post) {
+      return res.status(404).json({ Error: 'Post not found' });
+    }
+
+    // Toggle the visibility
+    post.visible = !post.visible;
+
+    // Save the changes
+    await post.save();
+
+    return res.status(200).json({
+      msg: 'Post visibility toggled successfully.',
+      post,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ Error: 'Internal Server Error' });
+  }
+};
+
