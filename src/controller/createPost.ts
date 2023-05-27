@@ -51,6 +51,7 @@ export const fetchAllPosts = async (req: Request, res: Response) => {
       msg: 'You have successfully retrieved all posts',
       posts,
     });
+
   } catch (error) {
     console.log(error);
     return res.status(500).json({
@@ -69,9 +70,11 @@ export const fetchPostById = async (req: Request | any, res: Response) => {
         msg: 'The request post was not found',
       });
     }
+
     return res.status(201).json({
       post,
     });
+
   } catch (error) {
     console.log(error);
     return res.status(500).json({ Error: 'Internal Server Error' });
@@ -90,6 +93,7 @@ export const fetchPostsByUser = async (req: Request | any, res: Response) => {
       msg: 'Posts retrieved successfully',
       posts,
     });
+    
   } catch (error) {
     res.status(500).json({ Error: 'Internal Server Error' });
   }
