@@ -8,6 +8,9 @@ export const loginUserSchema = Joi.object().keys({
 export const createPostSchema = Joi.object().keys({
     postContent: Joi.string().required()
 })
+export const updatePostSchema = Joi.object().keys({
+    postContent: Joi.string().required()
+})
 
 export const options = {
     abortEarly:false,

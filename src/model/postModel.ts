@@ -42,7 +42,7 @@ Post.init(
     },
     postContent: {
       type: DataTypes.STRING,
-      allowNull: false,
+     
     },
     like: {
       type: DataTypes.INTEGER,
