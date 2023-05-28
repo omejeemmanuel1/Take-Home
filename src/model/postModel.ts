@@ -10,6 +10,7 @@ export interface PostAttributes {
   comment: number;
   reply: number;
   report: number;
+  visible: boolean;
 }
 
 class Post extends Model<PostAttributes, PostAttributes> implements PostAttributes {
@@ -20,7 +21,11 @@ class Post extends Model<PostAttributes, PostAttributes> implements PostAttribut
   comment!: number;
   reply!: number;
   report!: number;
+<<<<<<< HEAD
   visible: any;
+=======
+  visible!: boolean;
+>>>>>>> 5e374b453bf49c2156de1792d4296e2d921e1fc4
 }
 
 Post.init(
@@ -41,7 +46,7 @@ Post.init(
     },
     postContent: {
       type: DataTypes.STRING,
-      allowNull: false,
+     
     },
     like: {
       type: DataTypes.INTEGER,
@@ -63,6 +68,12 @@ Post.init(
       allowNull: false,
       defaultValue: 0,
     },
+    visible: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: true, // or false, depending on your default visibility preference
+      },
+      
   },
   {
     sequelize,

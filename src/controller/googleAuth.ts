@@ -51,7 +51,8 @@ export const googleSignIn = async (req:Request, res:Response) => {
         password:"",
         gender: "",    
         otp:null,
-        otp_expiry:null,
+        otp_expiry: null,
+        blocked: []
         // verify: true
          });
          

@@ -7,10 +7,12 @@ import resetRouter from "./routes/resetPassword";
 import googleRouter from "./routes/google";
 import postRoute from "./routes/posts";
 import cors from 'cors';
-
+import commentRouter from "./routes/comments"
 
 import registerRouter from './routes/register';
-const groupRouter = require("./routes/group");
+
+///const groupRouter = require("./routes/group");
+
 import { connectDb, sequelize } from './config/database';
 
 const app = express();
@@ -22,6 +24,10 @@ app.use(
   })
 );
 
+app.set('view engine', 'ejs'); // Replace 'ejs' with your desired view engine
+
+
+app.set('views', path.join(__dirname, 'views')); 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -37,8 +43,10 @@ app.use((req, res, next) => {
 app.use('/user', registerRouter);
 app.use('/auth', googleRouter);
 app.use('/user', resetRouter);
-app.use("/group", groupRouter)
+
+//app.use("/group", groupRouter)
 app.use('/post', postRoute)
+app.use('/comment', commentRouter)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
