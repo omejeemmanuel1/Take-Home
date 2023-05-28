@@ -65,6 +65,51 @@ export const togglePostVisibility = async (req: Request, res: Response) => {
   }
 };
 
+//======================FETCH ALL POSTS===========================//
+
+export const fetchAllPosts = async (req: Request, res: Response) => {
+  try {
+    const posts = await Post.findAll();
+
+    if (posts.length === 0) {
+      return res.status(404).json({
+        msg: 'No posts found',
+      });
+    }
+
+    return res.status(201).json({
+      msg: 'You have successfully retrieved all posts',
+      posts,
+    });
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      msg: 'An error occurred while retrieving the posts',
+    });
+  }
+};
+
+//=====================FETCH POST BY USERID=========================//
+
+export const fetchPostsByUser = async (req: Request | any, res: Response) => {
+  try {
+    const verified = req.user;
+
+    const posts = await Post.findAll({
+      where: { userId: verified.id },
+    });
+
+    return res.status(201).json({
+      msg: 'Posts retrieved successfully',
+      posts,
+    });
+    
+  } catch (error) {
+    res.status(500).json({ Error: 'Internal Server Error' });
+  }
+};
+
 //=================DELETE POST=========================//
 
 export const deletePost = async (req: Request, res: Response) => {
@@ -117,7 +162,3 @@ export const updatePost = async (req: Request, res: Response) => {
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 };
-
-
-
-
