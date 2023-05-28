@@ -1,30 +1,7 @@
-
 import { Request, Response } from 'express';
 const { v4: uuidv4 } = require('uuid');
 import Group, { GroupAttributes} from '../model/groupModel';
 
-
-export const getAllGroups = async (req: Request, res: Response) => {
-try {
-const group = await Group.findAll()
-return res.status(200).json({
-message: ' All group have been successfully fetch',
-result: group
-});
-}catch(err){
-console.error(err)
-return res.status(500).json({
-    error: err
-    
-})
-}
-}
-
-
-interface User {
-  id: string;
-  email: string;
-}
 
 const createGroup = async (req: Request, res: Response) => {
   const { groupName, about } = req.body;
@@ -39,15 +16,15 @@ const createGroup = async (req: Request, res: Response) => {
     if (!userId) {
       return res.status(404).send('You are not allowed to create a group');
     }
-    const group = await Group.create({
-      id: uuidv4(),
-      groupName,
-      about,
-      date: new Date(),
-      userId,
-    });
+    // const group = await Group.create({
+    //   id: uuidv4(),
+    //   groupName,
+    //   about,
+    //   date: new Date(),
+    //   userId,
+    // });
     return res.status(201).json({
-      group,
+      // group,
       message: `${groupName} has been created`,
     });
   } catch (err) {
@@ -58,7 +35,27 @@ const createGroup = async (req: Request, res: Response) => {
   }
 };
 
-const getGroupById = async (req: Request, res: Response) => {
+
+interface User {
+  id: string;
+  email: string;
+}
+
+export const getAllGroups = async (req: Request, res: Response) => {
+  try {
+    const group = await Group.findAll();
+    return res.status(200).json({
+      message: ' All group have been successfully fetch',
+      result: group,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      error: err,
+    });
+  }
+};
+export const getGroupById = async (req: Request, res: Response) => {
   const groupId = req.params.id;
   try {
     const group = await Group.findOne({where:{id:groupId}});
@@ -80,7 +77,7 @@ const getGroupById = async (req: Request, res: Response) => {
 
 const joinGroup = async (req: Request|any, res: Response) => {
   const groupId = req.params.id;
-  const userId = req.user;
+  const userId = req.user as string;
   try {
     const group = await Group.findOne({where:{id:groupId}});
     if (!group) {
@@ -109,7 +106,7 @@ const joinGroup = async (req: Request|any, res: Response) => {
 
 const leaveGroup = async (req: Request|any, res: Response) => {
   const groupId = req.params.id;
-  const userId = req.user;
+  const userId = req.user as string;
   try {
     const group = await Group.findOne({where:{id:groupId}});
     if (!group) {
@@ -136,4 +133,4 @@ const leaveGroup = async (req: Request|any, res: Response) => {
   }
 };
 
-module.exports = { createGroup, getGroupById, joinGroup, leaveGroup };
+module.exports = { getAllGroups, getGroupById ,createGroup, joinGroup, leaveGroup};
