@@ -20,6 +20,7 @@ class Post extends Model<PostAttributes, PostAttributes> implements PostAttribut
   comment!: number;
   reply!: number;
   report!: number;
+  visible: any;
 }
 
 Post.init(
