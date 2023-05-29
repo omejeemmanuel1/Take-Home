@@ -1,7 +1,7 @@
 
 import { Request, Response } from 'express';
 const { v4: uuidv4 } = require('uuid');
-import Group, { GroupAttributes} from '../model/groupModel';
+// import Group, { GroupAttributes} from '../model/groupModel';
 const Group = require('../model/groupModel');
 
 export const getAllGroups = async (req: Request, res: Response) => {
