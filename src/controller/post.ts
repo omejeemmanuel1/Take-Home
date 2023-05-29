@@ -84,7 +84,55 @@ export const createPost = async (req: Request, res: Response) => {
 
 
 
+  
 
+export const likePost = async (req: Request, res: Response) => {
+  try {
+    const postId = req.params.postId;
+    const id  = req.user;
+
+    const postToLike = await Post.findOne({ where: { id: postId } });
+
+    if (!postToLike) {
+      return res.status(404).json({
+        error: "Post not found"
+      });
+    }
+
+    const likeArr = postToLike.like;
+    if (likeArr.includes(id)) {
+      const arr = likeArr.filter((item: any) => item !== id);
+      const unlikedPost = await postToLike.update({
+        like: arr
+      });
+
+      return res.status(200).json({
+        message: "You have unliked the post",
+        numberOfLikes: arr.length
+      });
+    }
+
+    likeArr.push(id);
+    const likedPost = await postToLike.update({
+      like: likeArr
+    });
+
+    return res.status(201).json({
+      message: "You have liked this post",
+      numberOfLikes: likeArr.length,
+      likedPost
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+
+
+
+
+  
 export const togglePostVisibility = async (req: Request, res: Response) => {
   try {
     const { postId } = req.params;
@@ -109,6 +157,51 @@ export const togglePostVisibility = async (req: Request, res: Response) => {
   } catch (error) {
     console.log(error);
     return res.status(500).json({ Error: 'Internal Server Error' });
+  }
+};
+
+//======================FETCH ALL POSTS===========================//
+
+export const fetchAllPosts = async (req: Request, res: Response) => {
+  try {
+    const posts = await Post.findAll();
+
+    if (posts.length === 0) {
+      return res.status(404).json({
+        msg: 'No posts found',
+      });
+    }
+
+    return res.status(201).json({
+      msg: 'You have successfully retrieved all posts',
+      posts,
+    });
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      msg: 'An error occurred while retrieving the posts',
+    });
+  }
+};
+
+//=====================FETCH POST BY USERID=========================//
+
+export const fetchPostsByUser = async (req: Request | any, res: Response) => {
+  try {
+    const verified = req.user;
+
+    const posts = await Post.findAll({
+      where: { userId: verified.id },
+    });
+
+    return res.status(201).json({
+      msg: 'Posts retrieved successfully',
+      posts,
+    });
+    
+  } catch (error) {
+    res.status(500).json({ Error: 'Internal Server Error' });
   }
 };
 
@@ -164,7 +257,3 @@ export const updatePost = async (req: Request, res: Response) => {
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 };
-
-
-
-
