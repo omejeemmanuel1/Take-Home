@@ -3,7 +3,6 @@ import { JwtPayload } from "jsonwebtoken";
 import Comment from "../model/commentsModel";
 import { v4 as uuidv4 } from "uuid";
 import Post from "../model/postModel";
-import sequelize from "sequelize";
 
 
 export const createComment = async (req: JwtPayload, res: Response) => {

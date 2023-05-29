@@ -6,22 +6,29 @@ export interface PostAttributes {
   id: string;
   userId: string;
   postContent: string;
-  like: number;
+  image: string[]; 
+  video: string[]; 
+  emoji: string;
+  like: any;
   comment: number;
   reply: number;
   report: number;
-  visible: boolean;
+  visible: any;
 }
 
 class Post extends Model<PostAttributes, PostAttributes> implements PostAttributes {
   id!: string;
   userId!: string;
   postContent!: string;
-  like!: number;
+  image!:  string[];
+  video!:  string[];
+  emoji!: string;
+  like!: any;
   comment!: number;
   reply!: number;
   report!: number;
-  visible!: boolean;
+  visible: any;
+
 }
 
 Post.init(
@@ -42,7 +49,20 @@ Post.init(
     },
     postContent: {
       type: DataTypes.STRING,
-      allowNull: false,
+    },
+    image: {
+      type: DataTypes.ARRAY(DataTypes.STRING),
+      allowNull: true,
+      defaultValue: [],
+    },
+    video: {
+      type: DataTypes.ARRAY(DataTypes.STRING),
+      allowNull: true,
+      defaultValue: [],
+    },
+    emoji: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     like: {
       type: DataTypes.INTEGER,
@@ -65,11 +85,10 @@ Post.init(
       defaultValue: 0,
     },
     visible: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-        defaultValue: true, // or false, depending on your default visibility preference
-      },
-      
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true,
+    },
   },
   {
     sequelize,
