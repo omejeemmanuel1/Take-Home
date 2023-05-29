@@ -8,11 +8,8 @@ import googleRouter from "./routes/google";
 import postRoute from "./routes/posts";
 import cors from 'cors';
 import commentRouter from "./routes/comments"
-
 import registerRouter from './routes/register';
-
 const groupRouter = require("./routes/group");
-
 import { connectDb, sequelize } from './config/database';
 
 const app = express();
@@ -24,6 +21,11 @@ app.use(
   })
 );
 
+
+app.set('view engine', 'ejs'); // Replace 'ejs' with your desired view engine
+
+
+app.set('views', path.join(__dirname, 'views')); 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -35,6 +37,7 @@ app.use((req, res, next) => {
   res.setHeader('Permissions-Policy', 'geolocation=(), microphone=(), camera=(), interest-cohort=()');
   next();
 });
+
 
 app.use('/user', registerRouter);
 app.use('/auth', googleRouter);
@@ -48,6 +51,7 @@ app.use('/comment', commentRouter)
 app.use(function (req, res, next) {
   next(createError(404));
 });
+
 
 //DB connection
 const syncDatabase = async () => {

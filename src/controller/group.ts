@@ -1,31 +1,29 @@
-
 import { Request, Response } from 'express';
 const { v4: uuidv4 } = require('uuid');
+// import Group, { GroupAttributes} from '../model/groupModel';
 const Group = require('../model/groupModel');
 
-export const getAllGroups = async (req: Request, res: Response) => {
-try {
-const group = await Group.findAll()
-return res.status(200).json({
-message: ' All group have been successfully fetch',
-result: group
-});
-}catch(err){
-console.error(err)
-return res.status(500).json({
-    error: err
-    
-})
-}
-}
-
+const getAllGroups = async (req: Request, res: Response) => {
+  try {
+    const group = await Group.findAll();
+    return res.status(200).json({
+      message: ' All group have been successfully fetch',
+      result: group,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      error: err,
+    });
+  }
+};
 
 interface User {
   id: string;
   email: string;
 }
 
-export const createGroup = async (req: Request, res: Response) => {
+const createGroup = async (req: Request, res: Response) => {
   const { groupName, about } = req.body;
   if (!groupName) {
     return res.status(404).send('Group Name is required');
@@ -56,7 +54,8 @@ export const createGroup = async (req: Request, res: Response) => {
     });
   }
 };
- export const getGroupById = async (req: Request, res: Response) => {
+
+const getGroupById = async (req: Request, res: Response) => {
   const groupId = req.params.id;
   try {
     const group = await Group.findById(groupId);
@@ -76,7 +75,7 @@ export const createGroup = async (req: Request, res: Response) => {
   }
 };
 
-export const joinGroup = async (req: Request, res: Response) => {
+const joinGroup = async (req: Request, res: Response) => {
   const groupId = req.params.id;
   const userId = req.user;
   try {
@@ -105,7 +104,7 @@ export const joinGroup = async (req: Request, res: Response) => {
   }
 };
 
-export const leaveGroup = async (req: Request, res: Response) => {
+const leaveGroup = async (req: Request, res: Response) => {
   const groupId = req.params.id;
   const userId = req.user;
   try {
@@ -134,3 +133,10 @@ export const leaveGroup = async (req: Request, res: Response) => {
   }
 };
 
+module.exports = {
+  getAllGroups,
+  createGroup,
+  getGroupById,
+  joinGroup,
+  leaveGroup,
+};

@@ -7,6 +7,7 @@ import User, { UserAttributes } from '../model/registerModel';
 import { v4 as uuidv4 } from 'uuid';
 import { generateOtp, sendVerificationOTP } from '../utils/resetPassword';
 
+
 export const register = async (req: Request, res: Response) => {
   const {
     firstName,

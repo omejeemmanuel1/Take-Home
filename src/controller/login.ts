@@ -51,3 +51,4 @@ export const Login = async (req: Request, res: Response) => {
     return res.status(500).json({ Error: 'Something went wrong' });
   }
 };
+

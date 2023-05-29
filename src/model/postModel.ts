@@ -6,6 +6,9 @@ export interface PostAttributes {
   id: string;
   userId: string;
   postContent: string;
+  image: string[]; 
+  video: string[]; 
+  emoji: string;
   like: number;
   comment: number;
   reply: number;
@@ -17,6 +20,9 @@ class Post extends Model<PostAttributes, PostAttributes> implements PostAttribut
   id!: string;
   userId!: string;
   postContent!: string;
+  image!:  string[];
+  video!:  string[];
+  emoji!: string;
   like!: number;
   comment!: number;
   reply!: number;
@@ -42,7 +48,20 @@ Post.init(
     },
     postContent: {
       type: DataTypes.STRING,
-      allowNull: false,
+    },
+    image: {
+      type: DataTypes.ARRAY(DataTypes.STRING),
+      allowNull: true,
+      defaultValue: [],
+    },
+    video: {
+      type: DataTypes.ARRAY(DataTypes.STRING),
+      allowNull: true,
+      defaultValue: [],
+    },
+    emoji: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     like: {
       type: DataTypes.INTEGER,
@@ -65,11 +84,10 @@ Post.init(
       defaultValue: 0,
     },
     visible: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-        defaultValue: true, // or false, depending on your default visibility preference
-      },
-      
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true,
+    },
   },
   {
     sequelize,
@@ -77,6 +95,5 @@ Post.init(
     timestamps: true,
   }
 );
-
 
 export default Post;
