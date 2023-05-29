@@ -9,26 +9,26 @@ export interface PostAttributes {
   image: string[]; 
   video: string[]; 
   emoji: string;
-  like: number;
+  like: any;
   comment: number;
   reply: number;
   report: number;
-  visible: boolean;
+  visible: any;
 }
 
 class Post extends Model<PostAttributes, PostAttributes> implements PostAttributes {
   id!: string;
   userId!: string;
   postContent!: string;
+  image!:  string[];
+  video!:  string[];
+  emoji!: string;
   like!: any;
   comment!: number;
   reply!: number;
   report!: number;
-<<<<<<< HEAD
   visible: any;
-=======
-  visible!: boolean;
->>>>>>> 5e374b453bf49c2156de1792d4296e2d921e1fc4
+
 }
 
 Post.init(
