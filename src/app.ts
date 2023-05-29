@@ -8,11 +8,8 @@ import googleRouter from "./routes/google";
 import postRoute from "./routes/posts";
 import cors from 'cors';
 import commentRouter from "./routes/comments"
-
 import registerRouter from './routes/register';
-
-///const groupRouter = require("./routes/group");
-
+const groupRouter = require("./routes/group");
 import { connectDb, sequelize } from './config/database';
 
 const app = express();
@@ -23,6 +20,7 @@ app.use(
     credentials: true,
   })
 );
+
 
 app.set('view engine', 'ejs'); // Replace 'ejs' with your desired view engine
 
@@ -40,11 +38,12 @@ app.use((req, res, next) => {
   next();
 });
 
+
 app.use('/user', registerRouter);
 app.use('/auth', googleRouter);
 app.use('/user', resetRouter);
 
-//app.use("/group", groupRouter)
+app.use("/group", groupRouter)
 app.use('/post', postRoute)
 app.use('/comment', commentRouter)
 
@@ -52,6 +51,7 @@ app.use('/comment', commentRouter)
 app.use(function (req, res, next) {
   next(createError(404));
 });
+
 
 //DB connection
 const syncDatabase = async () => {

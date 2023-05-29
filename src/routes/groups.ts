@@ -1,6 +1,6 @@
-import express from 'express'
-const router = express.Router();
-const getAllGroups = require('../controller/group');
+// import express from 'express'
+// const router = express.Router();
+// import { getAllGroups } from '../controller/group';
 
 // router.get('/all', getAllGroups)
 
@@ -8,4 +8,4 @@ const getAllGroups = require('../controller/group');
 
 
 
-module.exports = router
+// export default router

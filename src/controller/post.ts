@@ -1,38 +1,83 @@
 import { Request, Response } from "express";
 import { v4 as uuidv4 } from "uuid";
-import { createPostSchema,updatePostSchema, options } from "../utils/utils";
-import Post from "../model/postModel"
+import { createPostSchema, updatePostSchema, options } from "../utils/utils";
+import Post, { PostAttributes } from "../model/postModel";
+import jwt, { Secret } from 'jsonwebtoken';
+import { uploadFile } from '../middleware/cloudinary'; // Assuming you export the functions from the file where you defined them
+import { UploadApiResponse } from "cloudinary"
 
-export const createPost = async (req: Request | any, res: Response) => {
+
+
+export const createPost = async (req: Request, res: Response) => {
   try {
-    const verified = req.user;
+    const token = req.headers.authorization?.split(' ')[1];
+
+    if (!token) {
+      return res.status(401).json({ Error: 'Unauthorized' });
+    }
+
+    const verified = jwt.verify(token, process.env.JWT_SECRET_KEY as Secret);
+
+    if (!verified) {
+      return res.status(401).json({ Error: 'Token not valid' });
+    }
+
     const id = uuidv4();
 
-    // Validate the post data
     const validateResult = createPostSchema.validate(req.body, options);
 
     if (validateResult.error) {
       return res.status(400).json({ Error: validateResult.error.details[0].message });
     }
 
-    const userId = verified?.id; // Extract the id from verified
+    const userId = (verified as { id: string }).id;
 
-    if (!userId) {
-      return res.status(400).json({ Error: 'Invalid user ID' });
-    }
-
-    const postRecord = await Post.create({
+    const postData: PostAttributes = {
       id,
       ...req.body,
-      userId: userId, // Use the extracted userId
-    });
+      userId: userId,
+      image: [],
+      video: [],
+    };
 
-    return res.status(201).json({
-      msg: 'Post created successfully.',
-      postRecord,
-    });
+    const { image, video } = req.body;
+
+    if (image) {
+      try {
+        const uploadResult = await uploadFile(image, id, 'image');
+
+        if (uploadResult.secure_url) {
+          postData.image = [uploadResult.secure_url];
+        } else {
+          return res.status(400).json({ Error: 'Error uploading the image' });
+        }
+      } catch (error) {
+        return res.status(400).json({ Error: 'Error uploading the image' });
+      }
+    }
+
+    if (video) {
+      try {
+        const uploadResult = await uploadFile(video, id, 'video');
+
+        if (uploadResult.secure_url) {
+          postData.video = [uploadResult.secure_url];
+        } else {
+          return res.status(400).json({ Error: 'Error uploading the video' });
+        }
+      } catch (error) {
+        return res.status(400).json({ Error: 'Error uploading the video' });
+      }
+    }
+
+
+    try {
+      const newPost = await Post.create(postData);
+      return res.status(201).json(newPost);
+    } catch (error) {
+      return res.status(500).json({ Error: 'Failed to create the post' });
+    }
   } catch (error) {
-    console.log(error);
     return res.status(500).json({ Error: 'Internal Server Error' });
   }
 };
