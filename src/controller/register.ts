@@ -7,6 +7,7 @@ import User, { UserAttributes } from '../model/registerModel';
 import { v4 as uuidv4 } from 'uuid';
 import { generateOtp, sendVerificationOTP } from '../utils/resetPassword';
 
+
 export const register = async (req: Request, res: Response) => {
   const {
     firstName,
@@ -59,7 +60,8 @@ export const register = async (req: Request, res: Response) => {
     await sendVerificationOTP(newUser.email, newUser.otp);
 
     return res.status(201).json({
-      userDetails:newUser
+      userDetails:newUser,
+      token
      });
   } catch (err) {
     console.log(err);

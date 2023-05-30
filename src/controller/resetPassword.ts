@@ -109,19 +109,15 @@ export const resetPassword = async (req: Request, res: Response) => {
 
   try {
     const token = req.cookies.token;
-
     if (!token) {
       return res.status(400).json({ error: 'Token not found' });
     }
 
     const isValidToken = validatePasswordResetToken(token);
-
     if (!isValidToken) {
       return res.status(400).json({ error: 'Invalid or expired token' });
     }
-
-    const decodedToken: any = jwt.decode(token);
-    const { email } = decodedToken;
+    const {email} = isValidToken;
 
     const user = await User.findOne({ where: { email } });
 
