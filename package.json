@@ -47,7 +47,11 @@
     "querystring": "^0.2.1",
     "sequelize": "^6.31.1",
     "sib-api-v3-sdk": "^8.5.0",
+
+    "typescript": "^5.0.4",
+
     "socket.io": "^4.6.1",
+
     "uuid": "^9.0.0"
   },
   "devDependencies": {
