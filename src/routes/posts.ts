@@ -4,7 +4,7 @@ import {
   createPost,
   fetchAllPosts,
   fetchPostsByUser,
-//   likePost,
+  likePost,
   togglePostVisibility,
   updatePost,
   deletePost,
@@ -17,7 +17,7 @@ const router = express.Router();
 
 router.post('/create-post', auth, createPost);
 
-// router.put('/like-post/:id', auth, likePost);
+router.put('/like-post/:id', auth, likePost);
 
 router.get('/all', fetchAllPosts);
 router.get('/userId', auth, fetchPostsByUser);

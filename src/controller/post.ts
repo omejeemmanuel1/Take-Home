@@ -85,9 +85,6 @@ export const createPost = async (req: Request, res: Response) => {
         return res.status(400).json({ Error: 'Error uploading the file' });
       }
     }
-
-
-
     try {
       const newPost = await Post.create(postData);
       return res.status(201).json(newPost);
@@ -100,51 +97,52 @@ export const createPost = async (req: Request, res: Response) => {
 };
 
 
+export const likePost = async (req: Request, res: Response) => {
+  try {
+    const postId = req.body.postId;
+    const userId = req.user && typeof req.user === 'object' && 'id' in req.user ? req.user.id : '';
 
-// export const likePost = async (req: Request, res: Response) => {
-//   try {
-//     const postId = req.params.postId;
-//     const userId = req.user && typeof req.user.id === 'string' ? req.user.id : '';
-  
-//     const postToLike = await Post.findOne({ where: { id: postId } });
-  
-//     if (!postToLike) {
-//       return res.status(404).json({
-//         error: 'Post not found',
-//       });
-//     }
-  
-//     const likeArr = postToLike.like as string[];
-//     if (likeArr.includes(userId)) {
-//       const arr = likeArr.filter((item) => item !== userId);
-//       await postToLike.update({
-//         like: arr,
-//       });
-  
-//       return res.status(200).json({
-//         message: 'You have unliked the post',
-//         numberOfLikes: arr.length,
-//       });
-//     }
-  
-//     likeArr.push(userId);
-//     await postToLike.update({
-//       like: likeArr,
-//     });
-  
-//     return res.status(201).json({
-//       message: 'You have liked this post',
-//       numberOfLikes: likeArr.length,
-//       likedPost: postToLike,
-//     });
-//   } catch (error) {
-//     console.log(error);
-//     return res.status(500).json({ error: 'Internal Server Error' });
-//   }
-  
-// };
+    console.log('postId:', postId); // Add this line for debugging
 
+    const postToLike = await Post.findByPk(postId, { include: { model: User, as: 'User' } });
 
+    console.log('postToLike:', postToLike); // Add this line for debugging
+
+    if (!postToLike) {
+      console.log('Post not found', postId); // Add this line for debugging
+      return res.status(404).json({
+        error: 'Invalid postId',
+      });
+    }
+
+    const likeArr = postToLike.like as string[];
+    if (likeArr.includes(userId as string)) {
+      const arr = likeArr.filter((item) => item !== userId);
+      await postToLike.update({
+        like: arr,
+      });
+
+      return res.status(200).json({
+        message: 'You have unliked the post',
+        numberOfLikes: arr.length,
+      });
+    }
+
+    likeArr.push(userId as string);
+    await postToLike.update({
+      like: likeArr,
+    });
+
+    return res.status(201).json({
+      message: 'You have liked this post',
+      numberOfLikes: likeArr.length,
+      likedPost: postToLike,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
 
 
 

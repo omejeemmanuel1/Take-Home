@@ -106,9 +106,9 @@ User.init(
   }
 );
 
-User.hasMany(Post, { foreignKey: 'userId', as: 'Post' });
+User.hasMany(Post, { foreignKey: 'userId', as: 'Posts' });
 Post.belongsTo(User, { foreignKey: 'userId', as: 'User' });
-User.hasMany(Group, { foreignKey: 'userId', as: 'Group' });
+User.hasMany(Group, { foreignKey: 'userId', as: 'Groups' });
 Group.belongsTo(User, {foreignKey: "userId", as: "User"})
 
 export default User;
