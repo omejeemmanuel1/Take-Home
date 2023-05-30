@@ -3,7 +3,7 @@ import { JwtPayload } from "jsonwebtoken";
 import Comment from "../model/commentsModel";
 import { v4 as uuidv4 } from "uuid";
 import Post from "../model/postModel";
-import sequelize from "sequelize";
+import User from "../model/registerModel";
 
 
 export const createComment = async (req: JwtPayload, res: Response) => {
@@ -37,47 +37,51 @@ export const createComment = async (req: JwtPayload, res: Response) => {
 };
 
 export const fetchComments = async (req: Request, res: Response) => {
-    try{
-        const {postId, pageNumber, pageSize}: any = req.query;
-        const comments = await Comment.findAll({
-            where: {
-                post_id: postId,
-            },
-            limit: pageSize,
-            offset: pageNumber
-        });
-
-        res.json({comments});
-
-    }catch(err){
-        console.error('Error fetching comments', err);
-        res.status(500).json({Error: 'Failed to fetch comments'});
-    }
-}
-
-export const deleteComment = async (req: JwtPayload, res: Response) => {
-    const {commentId} = req.params;
-    const userId = req.user.id
-    console.log(commentId);
-    console.log(userId);
-
-    const comment:Comment | any = await Comment.findOne({
+    try {
+      const { postId, pageNumber, pageSize }: any = req.query;
+      const comments = await Comment.findAll({
         where: {
-            id: commentId,
-            user_id: userId
-        }
-    })
-    if(comment){
-        Comment.destroy({
-            where: {
-                id: commentId,
-                user_id: userId
-            }
-        })
-        await Post.decrement('comment', { by: 1, where: { id: comment.post_id }});
-        res.status(201).json({message: "comment deleted successfully"});
-    } else {
-        res.status(400).json({Error: 'cannot  delete comment'})
+          post_id: postId,
+        },
+        limit: pageSize,
+        offset: pageNumber,
+        include: {
+          model: User,
+          attributes: ['id', 'firstName', 'lastName', 'email'], 
+        },
+      });
+  
+      res.json({ comments });
+    } catch (err) {
+      console.error('Error fetching comments', err);
+      res.status(500).json({ Error: 'Failed to fetch comments' });
     }
+  }
+  
 
-}
+// export const deleteComment = async (req: JwtPayload, res: Response) => {
+//     const {commentId} = req.params;
+//     const userId = req.user.id
+//     console.log(commentId);
+//     console.log(userId);
+
+//     const comment:Comment | any = await Comment.findOne({
+//         where: {
+//             id: commentId,
+//             user_id: userId
+//         }
+//     })
+//     if(comment){
+//         Comment.destroy({
+//             where: {
+//                 id: commentId,
+//                 user_id: userId
+//             }
+//         })
+//         await Post.decrement('comment', { by: 1, where: { id: comment.post_id }});
+//         res.status(201).json({message: "comment deleted successfully"});
+//     } else {
+//         res.status(400).json({Error: 'cannot  delete comment'})
+//     }
+
+// }

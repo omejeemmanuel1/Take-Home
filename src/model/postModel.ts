@@ -6,22 +6,29 @@ export interface PostAttributes {
   id: string;
   userId: string;
   postContent: string;
-  like: number;
+  image: string[]; 
+  video: string[];
+  file: string[]; 
+  like: string[];
   comment: number;
-  reply: number;
+  reply:number;
   report: number;
-  visible: boolean;
+  visible: any;
 }
 
 class Post extends Model<PostAttributes, PostAttributes> implements PostAttributes {
   id!: string;
   userId!: string;
   postContent!: string;
-  like!: number;
+  image!:  string[];
+  video!:  string[];
+  file!: string[]; 
+  like!: string[];
   comment!: number;
   reply!: number;
   report!: number;
-  visible!: boolean;
+  visible: any;
+
 }
 
 Post.init(
@@ -42,12 +49,26 @@ Post.init(
     },
     postContent: {
       type: DataTypes.STRING,
-      allowNull: false,
+    },
+    image: {
+      type: DataTypes.ARRAY(DataTypes.STRING),
+      allowNull: true,
+      defaultValue: [],
+    },
+    video: {
+      type: DataTypes.ARRAY(DataTypes.STRING),
+      allowNull: true,
+      defaultValue: [],
+    },
+    file: {
+      type: DataTypes.ARRAY(DataTypes.STRING),
+      allowNull: true,
+      defaultValue: [],
     },
     like: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 0,
+      type: DataTypes.ARRAY(DataTypes.STRING),
+      allowNull: true,
+      defaultValue: [],
     },
     comment: {
       type: DataTypes.INTEGER,
@@ -65,11 +86,10 @@ Post.init(
       defaultValue: 0,
     },
     visible: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-        defaultValue: true, // or false, depending on your default visibility preference
-      },
-      
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true,
+    },
   },
   {
     sequelize,

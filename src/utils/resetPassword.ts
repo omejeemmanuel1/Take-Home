@@ -102,7 +102,7 @@ export const generatePasswordResetToken = async (
     }
 }
 
-export const validatePasswordResetToken = async (token: string) => {
+export const validatePasswordResetToken = (token: string) => {
     try {
         const decodedToken: any = jwt.verify(
             token,
@@ -112,7 +112,9 @@ export const validatePasswordResetToken = async (token: string) => {
         if (otp_expiry.getTime() < new Date().getTime()) {
             return false
         }
-        return true
+        console.log(decodedToken);
+        return decodedToken;
+    
     } catch (error) {
         console.error(error)
         return false
