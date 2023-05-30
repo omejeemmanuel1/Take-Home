@@ -3,21 +3,6 @@ const { v4: uuidv4 } = require('uuid');
 
 const Group = require('../model/groupModel');
 
-const getAllGroups = async (req: Request, res: Response) => {
-  try {
-    const group = await Group.findAll();
-    return res.status(200).json({
-      message: ' All group have been successfully fetch',
-      result: group,
-    });
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({
-      error: err,
-    });
-  }
-};
-
 interface User {
   id: string;
   email: string;
@@ -56,11 +41,6 @@ const createGroup = async (req: Request, res: Response) => {
   }
 };
 
-
-interface User {
-  id: string;
-  email: string;
-}
 
 const getAllGroups = async (req: Request, res: Response) => {
   try {

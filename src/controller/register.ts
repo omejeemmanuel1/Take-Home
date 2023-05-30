@@ -50,7 +50,8 @@ export const register = async (req: Request, res: Response) => {
       otp,
       otp_expiry,
       verify: false,
-      blocked:[]
+      blocked:[],
+      profilePhoto: 'https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg?auto=compress&cs=tinysrgb&w=600',
     });
 
     const token = jwt.sign({ id: newUser.id, email }, process.env.JWT_SECRET_KEY || 'SECRET-KEY', {

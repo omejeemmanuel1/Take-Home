@@ -7,11 +7,11 @@ export interface PostAttributes {
   userId: string;
   postContent: string;
   image: string[]; 
-  video: string[]; 
-  emoji: string;
-  like: any;
+  video: string[];
+  file: string[]; 
+  like: string[];
   comment: number;
-  reply: number;
+  reply:number;
   report: number;
   visible: any;
 }
@@ -22,8 +22,8 @@ class Post extends Model<PostAttributes, PostAttributes> implements PostAttribut
   postContent!: string;
   image!:  string[];
   video!:  string[];
-  emoji!: string;
-  like!: any;
+  file!: string[]; 
+  like!: string[];
   comment!: number;
   reply!: number;
   report!: number;
@@ -60,14 +60,15 @@ Post.init(
       allowNull: true,
       defaultValue: [],
     },
-    emoji: {
-      type: DataTypes.STRING,
+    file: {
+      type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: true,
+      defaultValue: [],
     },
     like: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 0,
+      type: DataTypes.ARRAY(DataTypes.STRING),
+      allowNull: true,
+      defaultValue: [],
     },
     comment: {
       type: DataTypes.INTEGER,

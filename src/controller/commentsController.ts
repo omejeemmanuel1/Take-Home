@@ -3,6 +3,7 @@ import { JwtPayload } from "jsonwebtoken";
 import Comment from "../model/commentsModel";
 import { v4 as uuidv4 } from "uuid";
 import Post from "../model/postModel";
+import User from "../model/registerModel";
 
 
 export const createComment = async (req: JwtPayload, res: Response) => {
@@ -36,23 +37,27 @@ export const createComment = async (req: JwtPayload, res: Response) => {
 };
 
 export const fetchComments = async (req: Request, res: Response) => {
-    try{
-        const {postId, pageNumber, pageSize}: any = req.query;
-        const comments = await Comment.findAll({
-            where: {
-                post_id: postId,
-            },
-            limit: pageSize,
-            offset: pageNumber
-        });
-
-        res.json({comments});
-
-    }catch(err){
-        console.error('Error fetching comments', err);
-        res.status(500).json({Error: 'Failed to fetch comments'});
+    try {
+      const { postId, pageNumber, pageSize }: any = req.query;
+      const comments = await Comment.findAll({
+        where: {
+          post_id: postId,
+        },
+        limit: pageSize,
+        offset: pageNumber,
+        include: {
+          model: User,
+          attributes: ['id', 'firstName', 'lastName', 'email'], 
+        },
+      });
+  
+      res.json({ comments });
+    } catch (err) {
+      console.error('Error fetching comments', err);
+      res.status(500).json({ Error: 'Failed to fetch comments' });
     }
-}
+  }
+  
 
 // export const deleteComment = async (req: JwtPayload, res: Response) => {
 //     const {commentId} = req.params;

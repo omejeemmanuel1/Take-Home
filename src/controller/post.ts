@@ -5,6 +5,7 @@ import Post, { PostAttributes } from "../model/postModel";
 import jwt, { Secret } from 'jsonwebtoken';
 import { uploadFile } from '../middleware/cloudinary'; // Assuming you export the functions from the file where you defined them
 import { UploadApiResponse } from "cloudinary"
+import User from "../model/registerModel";
 
 
 
@@ -38,9 +39,10 @@ export const createPost = async (req: Request, res: Response) => {
       userId: userId,
       image: [],
       video: [],
+      file: []
     };
 
-    const { image, video } = req.body;
+    const { image, video, file } = req.body;
 
     if (image) {
       try {
@@ -70,6 +72,21 @@ export const createPost = async (req: Request, res: Response) => {
       }
     }
 
+    if (file) {
+      try {
+        const uploadResult = await uploadFile(file, id, 'file');
+
+        if (uploadResult.secure_url) {
+          postData.file = [uploadResult.secure_url];
+        } else {
+          return res.status(400).json({ Error: 'Error uploading the file' });
+        }
+      } catch (error) {
+        return res.status(400).json({ Error: 'Error uploading the file' });
+      }
+    }
+
+
 
     try {
       const newPost = await Post.create(postData);
@@ -84,49 +101,48 @@ export const createPost = async (req: Request, res: Response) => {
 
 
 
+// export const likePost = async (req: Request, res: Response) => {
+//   try {
+//     const postId = req.params.postId;
+//     const userId = req.user && typeof req.user.id === 'string' ? req.user.id : '';
   
-
-export const likePost = async (req: Request, res: Response) => {
-  try {
-    const postId = req.params.postId;
-    const id  = req.user;
-
-    const postToLike = await Post.findOne({ where: { id: postId } });
-
-    if (!postToLike) {
-      return res.status(404).json({
-        error: "Post not found"
-      });
-    }
-
-    const likeArr = postToLike.like;
-    if (likeArr.includes(id)) {
-      const arr = likeArr.filter((item: any) => item !== id);
-      const unlikedPost = await postToLike.update({
-        like: arr
-      });
-
-      return res.status(200).json({
-        message: "You have unliked the post",
-        numberOfLikes: arr.length
-      });
-    }
-
-    likeArr.push(id);
-    const likedPost = await postToLike.update({
-      like: likeArr
-    });
-
-    return res.status(201).json({
-      message: "You have liked this post",
-      numberOfLikes: likeArr.length,
-      likedPost
-    });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ error: "Internal Server Error" });
-  }
-};
+//     const postToLike = await Post.findOne({ where: { id: postId } });
+  
+//     if (!postToLike) {
+//       return res.status(404).json({
+//         error: 'Post not found',
+//       });
+//     }
+  
+//     const likeArr = postToLike.like as string[];
+//     if (likeArr.includes(userId)) {
+//       const arr = likeArr.filter((item) => item !== userId);
+//       await postToLike.update({
+//         like: arr,
+//       });
+  
+//       return res.status(200).json({
+//         message: 'You have unliked the post',
+//         numberOfLikes: arr.length,
+//       });
+//     }
+  
+//     likeArr.push(userId);
+//     await postToLike.update({
+//       like: likeArr,
+//     });
+  
+//     return res.status(201).json({
+//       message: 'You have liked this post',
+//       numberOfLikes: likeArr.length,
+//       likedPost: postToLike,
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     return res.status(500).json({ error: 'Internal Server Error' });
+//   }
+  
+// };
 
 
 
@@ -160,11 +176,16 @@ export const togglePostVisibility = async (req: Request, res: Response) => {
   }
 };
 
-//======================FETCH ALL POSTS===========================//
 
 export const fetchAllPosts = async (req: Request, res: Response) => {
   try {
-    const posts = await Post.findAll();
+    const posts = await Post.findAll({
+      include: {
+        model: User,
+        as: 'User', // Use the correct alias for the association
+        attributes: ['id', 'firstName', 'lastName', 'email'],
+      },
+    });
 
     if (posts.length === 0) {
       return res.status(404).json({
@@ -172,20 +193,19 @@ export const fetchAllPosts = async (req: Request, res: Response) => {
       });
     }
 
-    return res.status(201).json({
+    return res.status(200).json({
       msg: 'You have successfully retrieved all posts',
       posts,
     });
 
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return res.status(500).json({
       msg: 'An error occurred while retrieving the posts',
     });
   }
 };
 
-//=====================FETCH POST BY USERID=========================//
 
 export const fetchPostsByUser = async (req: Request | any, res: Response) => {
   try {
@@ -193,17 +213,27 @@ export const fetchPostsByUser = async (req: Request | any, res: Response) => {
 
     const posts = await Post.findAll({
       where: { userId: verified.id },
+      include: {
+        model: User,
+        as: 'User', // Specify the alias used for the association
+        attributes: ['id', 'firstName', 'lastName', 'email'],
+      },
     });
 
-    return res.status(201).json({
+    return res.status(200).json({
       msg: 'Posts retrieved successfully',
       posts,
     });
     
   } catch (error) {
+    console.error(error);
     res.status(500).json({ Error: 'Internal Server Error' });
   }
 };
+
+
+
+
 
 //=================DELETE POST=========================//
 
