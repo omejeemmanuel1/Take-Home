@@ -13,10 +13,10 @@ const authenticatedUser = (req: Request, res: Response, next: NextFunction) => {
   try {
     const jwtSecret = process.env.JWT_SECRET_KEY as Secret;
     const decodedToken = jwt.verify(token, jwtSecret) as { id: string };
-    req.user = decodedToken.id;
+    req.user = { id: decodedToken.id }; // Set the 'id' property on req.user
     next();
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return res.status(401).json({ error: 'Invalid token' });
   }
 };

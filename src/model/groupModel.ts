@@ -7,7 +7,6 @@ export interface GroupAttributes {
   userId: string;
   groupName: string;
   about: string;
-  date: string;
   users: string[];
 }
 
@@ -16,7 +15,6 @@ class Group extends Model<GroupAttributes, GroupAttributes> implements GroupAttr
   userId!: string;
   groupName!: string;
   about!: string;
-  date!: string;
   users!: string[];
 }
 
@@ -43,10 +41,6 @@ Group.init(
     about: {
       type: DataTypes.STRING,
       allowNull: false,
-    },
-    date: {
-      type: DataTypes.DATE,
-      allowNull: true,
     },
     users: {
       type: DataTypes.ARRAY(DataTypes.UUID),

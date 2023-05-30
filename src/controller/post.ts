@@ -102,40 +102,43 @@ export const likePost = async (req: Request, res: Response) => {
     const postId = req.body.postId;
     const userId = req.user && typeof req.user === 'object' && 'id' in req.user ? req.user.id : '';
 
-    console.log('postId:', postId); // Add this line for debugging
+    console.log('postId:', postId); 
 
     const postToLike = await Post.findByPk(postId, { include: { model: User, as: 'User' } });
 
-    console.log('postToLike:', postToLike); // Add this line for debugging
+    console.log('postToLike:', postToLike); 
 
     if (!postToLike) {
-      console.log('Post not found', postId); // Add this line for debugging
+      console.log('Post not found', postId); 
       return res.status(404).json({
         error: 'Invalid postId',
       });
     }
 
     const likeArr = postToLike.like as string[];
-    if (likeArr.includes(userId as string)) {
-      const arr = likeArr.filter((item) => item !== userId);
-      await postToLike.update({
-        like: arr,
-      });
+    const liked = likeArr.includes(userId as string);
 
-      return res.status(200).json({
-        message: 'You have unliked the post',
-        numberOfLikes: arr.length,
-      });
+    let updatedLikeArr: string[];
+
+    if (liked) {
+      updatedLikeArr = likeArr.filter((item) => item !== userId);
+    } else {
+      updatedLikeArr = [...likeArr, userId as string];
     }
 
-    likeArr.push(userId as string);
     await postToLike.update({
-      like: likeArr,
+      like: updatedLikeArr,
     });
 
-    return res.status(201).json({
-      message: 'You have liked this post',
-      numberOfLikes: likeArr.length,
+    const numberOfLikes = updatedLikeArr.length;
+    const isLiked = updatedLikeArr.includes(userId as string);
+
+    const message = isLiked ? 'You have liked this post' : 'You have unliked the post';
+
+    return res.status(200).json({
+      message,
+      numberOfLikes,
+      liked: isLiked,
       likedPost: postToLike,
     });
   } catch (error) {
@@ -143,7 +146,6 @@ export const likePost = async (req: Request, res: Response) => {
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 };
-
 
 
   
