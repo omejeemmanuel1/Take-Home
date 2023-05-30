@@ -5,7 +5,7 @@ const { createGroup, getGroupById, joinGroup, leaveGroup, getAllGroups } = requi
 const { authenticatedUser } = require('../middleware/index');
 
 
-router.get('/all', getAllGroups);
+router.get('/all', authenticatedUser ,getAllGroups);
 router.post('/create-group', authenticatedUser, createGroup);
 router.get('/group/:id', getGroupById);
 router.post('/group/:id/join', authenticatedUser, joinGroup);

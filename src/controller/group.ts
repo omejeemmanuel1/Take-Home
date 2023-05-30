@@ -1,53 +1,66 @@
 import { Request, Response } from 'express';
-const { v4: uuidv4 } = require('uuid');
-
-const Group = require('../model/groupModel');
-
-interface User {
-  id: string;
-  email: string;
-}
-
+import { v4 as uuidv4 } from 'uuid';
+import Group, { GroupAttributes } from '../model/groupModel';
+import User from '../model/registerModel';
 
 const createGroup = async (req: Request, res: Response) => {
   const { groupName, about } = req.body;
+
   if (!groupName) {
-    return res.status(404).send('Group Name is required');
+    return res.status(400).json({ error: 'Group Name is required' });
   }
+
   if (!about) {
-    return res.status(404).send('About is required');
+    return res.status(400).json({ error: 'About is required' });
   }
+
   try {
-    const userId = req.user;
-    if (!userId) {
-      return res.status(404).send('You are not allowed to create a group');
+    const token = req.headers.authorization?.split(' ')[1];
+
+    if (!token) {
+      return res.status(401).json({ error: 'Unauthorized' });
     }
-    // const group = await Group.create({
-    //   id: uuidv4(),
-    //   groupName,
-    //   about,
-    //   date: new Date(),
-    //   userId,
-    // });
+
+    const userId = (req.user as { id: string }).id;
+
+    if (!userId) {
+      return res.status(401).json({ error: 'You are not allowed to create a group' });
+    }
+
+    const groupData: GroupAttributes = {
+      id: uuidv4(),
+      groupName,
+      about,
+      userId,
+      users: [],
+    };
+
+    const group = await Group.create(groupData);
+
     return res.status(201).json({
-      // group,
+      group,
       message: `${groupName} has been created`,
     });
   } catch (err) {
-    console.log(err);
-    return res.status(500).json({
-      err: 'Server Error',
-    });
+    console.error(err);
+    return res.status(500).json({ error: 'Server Error' });
   }
 };
 
 
+
 const getAllGroups = async (req: Request, res: Response) => {
   try {
-    const group = await Group.findAll();
+    const groups = await Group.findAll({
+      include: {
+        model: User,
+        as: 'User', // Specify the alias for the association
+      },
+    });
+
     return res.status(200).json({
-      message: ' All group have been successfully fetch',
-      result: group,
+      message: 'All groups have been successfully fetched',
+      result: groups,
     });
   } catch (err) {
     console.error(err);
@@ -56,6 +69,9 @@ const getAllGroups = async (req: Request, res: Response) => {
     });
   }
 };
+
+
+
 const getGroupById = async (req: Request, res: Response) => {
   const groupId = req.params.id;
   try {
