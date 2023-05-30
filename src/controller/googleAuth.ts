@@ -52,7 +52,8 @@ export const googleSignIn = async (req:Request, res:Response) => {
         gender: "",    
         otp:null,
         otp_expiry: null,
-        blocked: []
+        blocked:[],
+        profilePhoto: 'https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg?auto=compress&cs=tinysrgb&w=600',
         // verify: true
          });
          

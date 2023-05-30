@@ -10,7 +10,7 @@ export const createPostSchema = Joi.object().keys({
     postContent: Joi.string().required(),
     image: Joi.string().allow('').optional(),
     video: Joi.string().allow('').optional(),
-    emoji: Joi.string().optional(),
+    file: Joi.string().allow('').optional(),
   });
   
 

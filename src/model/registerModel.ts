@@ -17,6 +17,7 @@ export interface UserAttributes {
   otp_expiry: Date | null;
   verify: boolean | null;
   blocked: string[];
+  profilePhoto: string;
 }
 
 class User extends Model<UserAttributes, UserAttributes> implements UserAttributes {
@@ -33,6 +34,7 @@ class User extends Model<UserAttributes, UserAttributes> implements UserAttribut
   password!: string;
   verify!: boolean | null;
   blocked: string[] = [];
+  profilePhoto!: string;
 }
 
 User.init(
@@ -89,6 +91,11 @@ User.init(
     blocked: {
       type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: true,
+    },
+    profilePhoto: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: 'https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg?auto=compress&cs=tinysrgb&w=600', 
     },
 
   },
