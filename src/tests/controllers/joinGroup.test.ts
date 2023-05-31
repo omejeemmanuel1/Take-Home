@@ -1,7 +1,7 @@
 import request from 'supertest';
 import { Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
-import Group from '../../src/model/groupModel';
+import Group from '../../model/groupModel';
 const { joinGroup } = require('../controllers/group');
 
 const mockGroup: {
