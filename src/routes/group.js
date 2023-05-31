@@ -1,0 +1,10 @@
+var express = require('express');
+var router = express.Router();
+var _a = require('../controller/group'), createGroup = _a.createGroup, getAllGroups = _a.getAllGroups, getGroupById = _a.getGroupById, joinGroup = _a.joinGroup, leaveGroup = _a.leaveGroup;
+var authenticatedUser = require('../middleware/index').authenticatedUser;
+router.get('/all', getAllGroups);
+router.post('/create-group', authenticatedUser, createGroup);
+router.get('/group/:id', getGroupById);
+router.post('/group/:id/join', authenticatedUser, joinGroup);
+router.post('/group/:id/leave', authenticatedUser, leaveGroup);
+module.exports = router;
