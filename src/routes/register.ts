@@ -1,5 +1,5 @@
-import express, {Response, Request} from "express";
-import {register, verifyOTP} from "../controller/register";
+import express from "express";
+import { register, verifyOTP} from "../controller/register";
 import registerSchema from "../utils/registerValidation";
 import { Login } from '../controller/login';
 
