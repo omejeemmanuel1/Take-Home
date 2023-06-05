@@ -183,7 +183,7 @@ export const fetchAllPosts = async (req: Request, res: Response) => {
       include: {
         model: User,
         as: 'User', // Use the correct alias for the association
-        attributes: ['id', 'firstName', 'lastName', 'email'],
+        attributes: ['id', 'firstName', 'lastName', 'email', 'profilePhoto'],
       },
     });
 

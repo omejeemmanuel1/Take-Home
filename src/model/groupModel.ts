@@ -16,6 +16,8 @@ class Group extends Model<GroupAttributes, GroupAttributes> implements GroupAttr
   groupName!: string;
   about!: string;
   users!: string[];
+  createdAt: any;
+  updatedAt: any;
 }
 
 Group.init(

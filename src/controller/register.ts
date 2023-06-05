@@ -100,3 +100,4 @@ export const verifyOTP = async (req: Request, res: Response) => {
   }
 };
 
+
