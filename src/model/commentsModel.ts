@@ -1,40 +1,60 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../config/database';
-import Post from './postModel';
-import User from './registerModel';
+import Post from './postModel'; // Import the Post model
+import User from './registerModel'; // Import the User model
+import Group from './groupModel';
+
 export interface CommentAttributes {
   id: string;
   comment: string;
   user_id: string;
   post_id: string;
+  groupId: string | null;
 }
 
-class Comment extends Model<CommentAttributes> {}
+class Comment extends Model<CommentAttributes> implements CommentAttributes {
+  id!: string;
+  comment!: string;
+  user_id!: string;
+  post_id!: string;
+  groupId!: string | null;
+  createdAt!: Date;
+  updatedAt!: Date;
+}
 
 Comment.init(
   {
     id: {
-      type: DataTypes.STRING,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
       allowNull: false,
     },
     comment: {
-        type: DataTypes.STRING,
-        allowNull: false,
+      type: DataTypes.STRING,
+      allowNull: false,
     },
-    user_id:{
-        type: DataTypes.STRING,
-        references: {
-          model: User,
-          key: 'id', 
-        },
+    user_id: {
+      type: DataTypes.STRING,
+      references: {
+        model: User,
+        key: 'id',
+      },
     },
     post_id: {
-        type: DataTypes.UUID,
-        references: {
-          model: Post,
-          key: 'id',
-        }
+      type: DataTypes.UUID,
+      references: {
+        model: Post,
+        key: 'id',
+      },
+    },
+    groupId: {
+      type: DataTypes.UUID,
+      allowNull: true,
+      references: {
+        model: Group,
+        key: 'id',
+      },
     },
   },
   {
@@ -44,10 +64,9 @@ Comment.init(
   }
 );
 
-Comment.belongsTo(Post, { foreignKey: 'post_id'}); 
-Post.hasMany(Comment, { foreignKey: 'post_id', as: 'comments'});
-Comment.belongsTo(User, { foreignKey: 'user_id'}); 
-User.hasMany(Comment, { foreignKey: 'user_id'});
-
+Comment.belongsTo(Post, { foreignKey: 'post_id' });
+Post.hasMany(Comment, { foreignKey: 'post_id', as: 'comments' });
+Comment.belongsTo(User, { foreignKey: 'user_id' });
+User.hasMany(Comment, { foreignKey: 'user_id' });
 
 export default Comment;

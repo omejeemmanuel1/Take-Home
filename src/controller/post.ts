@@ -1,12 +1,10 @@
-import { Request, Response } from "express";
-import { v4 as uuidv4 } from "uuid";
-import { createPostSchema, updatePostSchema, options } from "../utils/utils";
-import Post, { PostAttributes } from "../model/postModel";
+import { Request, Response } from 'express';
+import { v4 as uuidv4 } from 'uuid';
+import { createPostSchema, updatePostSchema, options } from '../utils/utils';
+import Post, { PostAttributes } from '../model/postModel';
 import jwt, { Secret } from 'jsonwebtoken';
 import { uploadFile } from '../middleware/cloudinary'; // Assuming you export the functions from the file where you defined them
-import { UploadApiResponse } from "cloudinary"
-import User from "../model/registerModel";
-
+import User from '../model/registerModel';
 
 
 export const createPost = async (req: Request, res: Response) => {
@@ -33,14 +31,10 @@ export const createPost = async (req: Request, res: Response) => {
 
     const userId = (verified as { id: string }).id;
 
-    const postData: PostAttributes = {
-      id,
-      ...req.body,
-      userId: userId,
-      image: [],
-      video: [],
-      file: []
-    };
+    const { groupId, ...postData } = req.body;
+
+    postData.userId = userId;
+    postData.groupId = groupId;
 
     const { image, video, file } = req.body;
 
@@ -85,16 +79,27 @@ export const createPost = async (req: Request, res: Response) => {
         return res.status(400).json({ Error: 'Error uploading the file' });
       }
     }
+
     try {
-      const newPost = await Post.create(postData);
+      const newPostData = {
+        ...postData,
+        image: image ? [image] : [], 
+        video: video ? [video] : [], 
+        file: file ? [file] : [],
+      };
+
+      const newPost = await Post.create(newPostData);
       return res.status(201).json(newPost);
     } catch (error) {
+      console.error('Failed to create the post:', error);
       return res.status(500).json({ Error: 'Failed to create the post' });
     }
   } catch (error) {
+    console.error('Internal Server Error:', error);
     return res.status(500).json({ Error: 'Internal Server Error' });
   }
 };
+
 
 
 export const likePost = async (req: Request, res: Response) => {
@@ -102,14 +107,20 @@ export const likePost = async (req: Request, res: Response) => {
     const postId = req.body.postId;
     const userId = req.user && typeof req.user === 'object' && 'id' in req.user ? req.user.id : '';
 
-    console.log('postId:', postId); 
+    console.log('postId:', postId);
 
-    const postToLike = await Post.findByPk(postId, { include: { model: User, as: 'User' } });
+    const postToLike = await Post.findOne({
+      where: {
+        id: postId,
+        groupId: req.body.groupId,
+      },
+      include: { model: User, as: 'User' },
+    });
 
-    console.log('postToLike:', postToLike); 
+    console.log('postToLike:', postToLike);
 
     if (!postToLike) {
-      console.log('Post not found', postId); 
+      console.log('Post not found', postId);
       return res.status(404).json({
         error: 'Invalid postId',
       });
@@ -147,14 +158,17 @@ export const likePost = async (req: Request, res: Response) => {
   }
 };
 
-
-  
 export const togglePostVisibility = async (req: Request, res: Response) => {
   try {
-    const { postId } = req.params;
+    const { postId, groupId } = req.params;
 
-    // Find the post by postId
-    const post = await Post.findByPk(postId);
+    // Find the post by postId and groupId
+    const post = await Post.findOne({
+      where: {
+        id: postId,
+        groupId: groupId,
+      },
+    });
 
     if (!post) {
       return res.status(404).json({ Error: 'Post not found' });
@@ -176,16 +190,30 @@ export const togglePostVisibility = async (req: Request, res: Response) => {
   }
 };
 
-
 export const fetchAllPosts = async (req: Request, res: Response) => {
   try {
-    const posts = await Post.findAll({
-      include: {
-        model: User,
-        as: 'User', // Use the correct alias for the association
-        attributes: ['id', 'firstName', 'lastName', 'email', 'profilePhoto'],
-      },
-    });
+    const { groupId } = req.query;
+
+    let posts;
+
+    if (groupId) {
+      posts = await Post.findAll({
+        where: { groupId: groupId as string },
+        include: {
+          model: User,
+          as: 'User',
+          attributes: ['id', 'firstName', 'lastName', 'email', 'profilePhoto'],
+        },
+      });
+    } else {
+      posts = await Post.findAll({
+        include: {
+          model: User,
+          as: 'User',
+          attributes: ['id', 'firstName', 'lastName', 'email', 'profilePhoto'],
+        },
+      });
+    }
 
     if (posts.length === 0) {
       return res.status(404).json({
@@ -197,7 +225,6 @@ export const fetchAllPosts = async (req: Request, res: Response) => {
       msg: 'You have successfully retrieved all posts',
       posts,
     });
-
   } catch (error) {
     console.error(error);
     return res.status(500).json({
@@ -206,42 +233,51 @@ export const fetchAllPosts = async (req: Request, res: Response) => {
   }
 };
 
-
 export const fetchPostsByUser = async (req: Request | any, res: Response) => {
   try {
     const verified = req.user;
+    const { groupId } = req.query;
 
-    const posts = await Post.findAll({
-      where: { userId: verified.id },
-      include: {
-        model: User,
-        as: 'User', // Specify the alias used for the association
-        attributes: ['id', 'firstName', 'lastName', 'email'],
-      },
-    });
+    let posts;
+
+    if (groupId) {
+      posts = await Post.findAll({
+        where: { userId: verified.id, groupId },
+        include: {
+          model: User,
+          as: 'User',
+          attributes: ['id', 'firstName', 'lastName', 'email'],
+        },
+      });
+    } else {
+      posts = await Post.findAll({
+        where: { userId: verified.id },
+        include: {
+          model: User,
+          as: 'User',
+          attributes: ['id', 'firstName', 'lastName', 'email'],
+        },
+      });
+    }
 
     return res.status(200).json({
       msg: 'Posts retrieved successfully',
       posts,
     });
-    
   } catch (error) {
     console.error(error);
     res.status(500).json({ Error: 'Internal Server Error' });
   }
 };
 
-
-
-
-
 //=================DELETE POST=========================//
 
 export const deletePost = async (req: Request, res: Response) => {
   try {
-    const postId = req.params.id; 
+    const postId = req.params.id;
+    const groupId = req.query.groupId as string; // Assuming groupId is passed as a query parameter
 
-    const post = await Post.findOne({ where: { id: postId } });
+    const post = await Post.findOne({ where: { id: postId, groupId: groupId } });
 
     if (!post) {
       return res.status(404).json({ error: 'Post not found' });
@@ -257,33 +293,64 @@ export const deletePost = async (req: Request, res: Response) => {
   }
 };
 
-
-
 //==========================UPDATE POST===============================//
 
 export const updatePost = async (req: Request, res: Response) => {
   try {
-    const postId = req.params.id; 
-    const updatedData = req.body; 
+    const postId = req.params.id;
+    const groupId = req.query.groupId as string;
 
+    if (!groupId) {
+      return res.status(400).json({ error: 'groupId parameter is missing' });
+    }
 
-    const post = await Post.findByPk(postId);
+    const updatedData = req.body;
+
+    const post = await Post.findOne({ where: { id: postId, groupId: groupId } });
 
     if (!post) {
       return res.status(404).json({ error: 'Post not found' });
     }
 
-   
+    // Update the post data
     await post.update(updatedData);
 
-   
+    // Check for updated image, video, or file
+    const { image, video, file } = req.body;
+
+    if (image) {
+      // Upload and update the image
+      const uploadResult = await uploadFile(image, postId, 'image');
+      if (uploadResult.secure_url) {
+        post.image = [uploadResult.secure_url];
+      }
+    }
+
+    if (video) {
+      // Upload and update the video
+      const uploadResult = await uploadFile(video, postId, 'video');
+      if (uploadResult.secure_url) {
+        post.video = [uploadResult.secure_url];
+      }
+    }
+
+    if (file) {
+      // Upload and update the file
+      const uploadResult = await uploadFile(file, postId, 'file');
+      if (uploadResult.secure_url) {
+        post.file = [uploadResult.secure_url];
+      }
+    }
+
+    // Save the updated post with image, video, or file changes
+    await post.save();
+
+    // Fetch the updated post
     const updatedPost = await Post.findByPk(postId);
 
     return res.status(200).json({ message: 'Post updated successfully', post: updatedPost });
   } catch (error) {
-
     console.log(error);
-
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 };
