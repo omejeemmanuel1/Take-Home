@@ -1,34 +1,36 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../config/database';
 import User from './registerModel';
+import Group from './groupModel';
 
 export interface PostAttributes {
   id: string;
   userId: string;
+  groupId: string | null;
   postContent: string;
-  image: string[]; 
+  image: string[];
   video: string[];
-  file: string[]; 
+  file: string[];
   like: string[];
   comment: number;
-  reply:number;
+  reply: number;
   report: number;
   visible: any;
 }
 
-class Post extends Model<PostAttributes, PostAttributes> implements PostAttributes {
+class Post extends Model<PostAttributes> implements PostAttributes {
   id!: string;
   userId!: string;
+  groupId!: string | null; // New field for group association
   postContent!: string;
-  image!:  string[];
-  video!:  string[];
-  file!: string[]; 
+  image!: string[];
+  video!: string[];
+  file!: string[];
   like!: string[];
   comment!: number;
   reply!: number;
   report!: number;
-  visible: any;
-
+  visible!: any; // Add exclamation mark for non-nullable field
 }
 
 Post.init(
@@ -44,6 +46,14 @@ Post.init(
       allowNull: false,
       references: {
         model: User,
+        key: 'id',
+      },
+    },
+    groupId: {
+      type: DataTypes.UUID, // Change the data type to UUID
+      allowNull: true,
+      references: {
+        model: Group,
         key: 'id',
       },
     },

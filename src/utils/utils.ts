@@ -11,6 +11,7 @@ export const createPostSchema = Joi.object().keys({
     image: Joi.string().allow('').optional(),
     video: Joi.string().allow('').optional(),
     file: Joi.string().allow('').optional(),
+    groupId: Joi.string().allow().optional(),
   });
   
 
