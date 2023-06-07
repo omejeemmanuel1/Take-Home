@@ -26,6 +26,7 @@ export const createComment = async (req: JwtPayload, res: Response) => {
             post_id: postId,
             user_id: userId,
             comment,
+            like: [],
         });
         await Post.increment('comment', { by: 1, where: { id: postId }});
         res.status(201).json({comment: newComment});
