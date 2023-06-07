@@ -7,6 +7,7 @@ import Group from './groupModel';
 export interface CommentAttributes {
   id: string;
   comment: string;
+  like: string[];
   user_id: string;
   post_id: string;
   groupId: string | null;
@@ -15,6 +16,7 @@ export interface CommentAttributes {
 class Comment extends Model<CommentAttributes> implements CommentAttributes {
   id!: string;
   comment!: string;
+  like!: string[];
   user_id!: string;
   post_id!: string;
   groupId!: string | null;
@@ -33,6 +35,11 @@ Comment.init(
     comment: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    like: {
+      type: DataTypes.ARRAY(DataTypes.STRING),
+      allowNull: true,
+      defaultValue: [],
     },
     user_id: {
       type: DataTypes.STRING,

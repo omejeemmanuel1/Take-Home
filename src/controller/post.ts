@@ -5,6 +5,7 @@ import Post, { PostAttributes } from '../model/postModel';
 import jwt, { Secret } from 'jsonwebtoken';
 import { uploadFile } from '../middleware/cloudinary'; // Assuming you export the functions from the file where you defined them
 import User from '../model/registerModel';
+import { Op, WhereAttributeHash } from 'sequelize';
 
 
 export const createPost = async (req: Request, res: Response) => {
@@ -105,15 +106,19 @@ export const createPost = async (req: Request, res: Response) => {
 export const likePost = async (req: Request, res: Response) => {
   try {
     const postId = req.body.postId;
-    const userId = req.user && typeof req.user === 'object' && 'id' in req.user ? req.user.id : '';
+    const groupId = req.body.groupId;
+    const userId = (req.user as { id: string })?.id;
 
     console.log('postId:', postId);
 
+    const whereCondition: any = { id: postId };
+
+    if (groupId) {
+      whereCondition['groupId'] = groupId;
+    }
+
     const postToLike = await Post.findOne({
-      where: {
-        id: postId,
-        groupId: req.body.groupId,
-      },
+      where: whereCondition,
       include: { model: User, as: 'User' },
     });
 
@@ -158,15 +163,20 @@ export const likePost = async (req: Request, res: Response) => {
   }
 };
 
+
+
+
+
 export const togglePostVisibility = async (req: Request, res: Response) => {
   try {
-    const { postId, groupId } = req.params;
+    const { postId } = req.params;
+    const groupId = req.query.groupId as string | undefined;
 
-    // Find the post by postId and groupId
-    const post = await Post.findOne({
+    // Find the post by postId and groupId (if provided)
+    const post: Post | null = await Post.findOne({
       where: {
         id: postId,
-        groupId: groupId,
+        groupId: groupId ? ({ [Op.eq]: groupId } as unknown as WhereAttributeHash<string>) : null,
       },
     });
 
@@ -189,6 +199,9 @@ export const togglePostVisibility = async (req: Request, res: Response) => {
     return res.status(500).json({ Error: 'Internal Server Error' });
   }
 };
+
+
+
 
 export const fetchAllPosts = async (req: Request, res: Response) => {
   try {
@@ -275,9 +288,11 @@ export const fetchPostsByUser = async (req: Request | any, res: Response) => {
 export const deletePost = async (req: Request, res: Response) => {
   try {
     const postId = req.params.id;
-    const groupId = req.query.groupId as string; // Assuming groupId is passed as a query parameter
+    const groupId = req.query.groupId as string;
 
-    const post = await Post.findOne({ where: { id: postId, groupId: groupId } });
+    const post = groupId
+      ? await Post.findOne({ where: { id: postId, groupId: groupId } }) // Delete group post
+      : await Post.findByPk(postId); // Delete general post
 
     if (!post) {
       return res.status(404).json({ error: 'Post not found' });
@@ -293,6 +308,7 @@ export const deletePost = async (req: Request, res: Response) => {
   }
 };
 
+
 //==========================UPDATE POST===============================//
 
 export const updatePost = async (req: Request, res: Response) => {
@@ -300,24 +316,26 @@ export const updatePost = async (req: Request, res: Response) => {
     const postId = req.params.id;
     const groupId = req.query.groupId as string;
 
-    if (!groupId) {
-      return res.status(400).json({ error: 'groupId parameter is missing' });
-    }
-
     const updatedData = req.body;
 
-    const post = await Post.findOne({ where: { id: postId, groupId: groupId } });
+    const post = await Post.findOne({ where: { id: postId, groupId: groupId || null } });
 
     if (!post) {
       return res.status(404).json({ error: 'Post not found' });
     }
 
+    // Convert image, video, file fields to arrays
+    const { image, video, file } = updatedData;
+    updatedData.image = image ? [image] : [];
+    updatedData.video = video ? [video] : [];
+    updatedData.file = file ? [file] : [];
+
     // Update the post data
-    await post.update(updatedData);
+    await post.update(updatedData, {
+      fields: ['postContent', 'image', 'video', 'file', 'visible'],
+    });
 
     // Check for updated image, video, or file
-    const { image, video, file } = req.body;
-
     if (image) {
       // Upload and update the image
       const uploadResult = await uploadFile(image, postId, 'image');
