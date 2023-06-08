@@ -101,3 +101,16 @@ export const verifyOTP = async (req: Request, res: Response) => {
 };
 
 
+export const getAllUsers = async (req: Request, res: Response) => {
+  try {
+    const allUsers = await User.findAll();
+    console.log(allUsers);
+
+    if (!allUsers) {
+      return res.status(404).json({ Error: 'No Users found' });
+    }
+    return res.status(200).json({ allUsers });
+  } catch (error) {
+    return res.status(500).json({ error });
+  }
+};
