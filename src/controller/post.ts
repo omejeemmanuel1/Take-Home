@@ -7,7 +7,6 @@ import { uploadFile } from '../middleware/cloudinary'; // Assuming you export th
 import User from '../model/registerModel';
 import { Op, WhereAttributeHash } from 'sequelize';
 
-
 export const createPost = async (req: Request, res: Response) => {
   try {
     const token = req.headers.authorization?.split(' ')[1];
@@ -84,8 +83,8 @@ export const createPost = async (req: Request, res: Response) => {
     try {
       const newPostData = {
         ...postData,
-        image: image ? [image] : [], 
-        video: video ? [video] : [], 
+        image: image ? [image] : [],
+        video: video ? [video] : [],
         file: file ? [file] : [],
       };
 
@@ -100,8 +99,6 @@ export const createPost = async (req: Request, res: Response) => {
     return res.status(500).json({ Error: 'Internal Server Error' });
   }
 };
-
-
 
 export const likePost = async (req: Request, res: Response) => {
   try {
@@ -163,10 +160,6 @@ export const likePost = async (req: Request, res: Response) => {
   }
 };
 
-
-
-
-
 export const togglePostVisibility = async (req: Request, res: Response) => {
   try {
     const { postId } = req.params;
@@ -199,9 +192,6 @@ export const togglePostVisibility = async (req: Request, res: Response) => {
     return res.status(500).json({ Error: 'Internal Server Error' });
   }
 };
-
-
-
 
 export const fetchAllPosts = async (req: Request, res: Response) => {
   try {
@@ -259,7 +249,7 @@ export const fetchPostsByUser = async (req: Request | any, res: Response) => {
         include: {
           model: User,
           as: 'User',
-          attributes: ['id', 'firstName', 'lastName', 'email'],
+          attributes: ['id', 'firstName', 'lastName', 'email', 'profilePhoto'],
         },
       });
     } else {
@@ -268,7 +258,7 @@ export const fetchPostsByUser = async (req: Request | any, res: Response) => {
         include: {
           model: User,
           as: 'User',
-          attributes: ['id', 'firstName', 'lastName', 'email'],
+          attributes: ['id', 'firstName', 'lastName', 'email', 'profilePhoto'],
         },
       });
     }
@@ -307,7 +297,6 @@ export const deletePost = async (req: Request, res: Response) => {
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 };
-
 
 //==========================UPDATE POST===============================//
 
