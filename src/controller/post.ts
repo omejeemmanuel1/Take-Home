@@ -5,7 +5,8 @@ import Post, { PostAttributes } from '../model/postModel';
 import jwt, { Secret } from 'jsonwebtoken';
 import { uploadFile } from '../middleware/cloudinary'; // Assuming you export the functions from the file where you defined them
 import User from '../model/registerModel';
-import { Op, WhereAttributeHash } from 'sequelize';
+import { Model, Op, WhereAttributeHash } from 'sequelize';
+import Comment, { CommentAttributes } from '../model/commentsModel';
 
 
 export const createPost = async (req: Request, res: Response) => {
@@ -34,62 +35,66 @@ export const createPost = async (req: Request, res: Response) => {
 
     const { groupId, ...postData } = req.body;
 
+    if (!Array.isArray(postData.image)) {
+      postData.image = [];
+    }
+
+    if (!Array.isArray(postData.video)) {
+      postData.video = [];
+    }
+
+    if (!Array.isArray(postData.file)) {
+      postData.file = [];
+    }
+
     postData.userId = userId;
     postData.groupId = groupId;
 
-    const { image, video, file } = req.body;
+    if (req.files) {
+      const files = req.files as { [fieldname: string]: Express.Multer.File[] };
 
-    if (image) {
-      try {
-        const uploadResult = await uploadFile(image, id, 'image');
+      if (files.image && Array.isArray(files.image)) {
+        for (const img of files.image) {
+          const imagePath = img.path; // Get the file path
+          const uploadResult = await uploadFile(imagePath, id, 'image');
 
-        if (uploadResult.secure_url) {
-          postData.image = [uploadResult.secure_url];
-        } else {
-          return res.status(400).json({ Error: 'Error uploading the image' });
+          if (uploadResult.secure_url) {
+            postData.image.push(uploadResult.secure_url);
+          } else {
+            return res.status(400).json({ Error: 'Error uploading the image' });
+          }
         }
-      } catch (error) {
-        return res.status(400).json({ Error: 'Error uploading the image' });
       }
-    }
 
-    if (video) {
-      try {
-        const uploadResult = await uploadFile(video, id, 'video');
+      if (files.video && Array.isArray(files.video)) {
+        for (const vid of files.video) {
+          const videoPath = vid.path; // Get the file path
+          const uploadResult = await uploadFile(videoPath, id, 'video');
 
-        if (uploadResult.secure_url) {
-          postData.video = [uploadResult.secure_url];
-        } else {
-          return res.status(400).json({ Error: 'Error uploading the video' });
+          if (uploadResult.secure_url) {
+            postData.video.push(uploadResult.secure_url);
+          } else {
+            return res.status(400).json({ Error: 'Error uploading the video' });
+          }
         }
-      } catch (error) {
-        return res.status(400).json({ Error: 'Error uploading the video' });
       }
-    }
 
-    if (file) {
-      try {
-        const uploadResult = await uploadFile(file, id, 'file');
+      if (files.file && Array.isArray(files.file)) {
+        for (const f of files.file) {
+          const filePath = f.path; // Get the file path
+          const uploadResult = await uploadFile(filePath, id, 'file');
 
-        if (uploadResult.secure_url) {
-          postData.file = [uploadResult.secure_url];
-        } else {
-          return res.status(400).json({ Error: 'Error uploading the file' });
+          if (uploadResult.secure_url) {
+            postData.file.push(uploadResult.secure_url);
+          } else {
+            return res.status(400).json({ Error: 'Error uploading the file' });
+          }
         }
-      } catch (error) {
-        return res.status(400).json({ Error: 'Error uploading the file' });
       }
     }
 
     try {
-      const newPostData = {
-        ...postData,
-        image: image ? [image] : [], 
-        video: video ? [video] : [], 
-        file: file ? [file] : [],
-      };
-
-      const newPost = await Post.create(newPostData);
+      const newPost = await Post.create(postData);
       return res.status(201).json(newPost);
     } catch (error) {
       console.error('Failed to create the post:', error);
@@ -100,6 +105,7 @@ export const createPost = async (req: Request, res: Response) => {
     return res.status(500).json({ Error: 'Internal Server Error' });
   }
 };
+
 
 
 
@@ -163,10 +169,6 @@ export const likePost = async (req: Request, res: Response) => {
   }
 };
 
-
-
-
-
 export const togglePostVisibility = async (req: Request, res: Response) => {
   try {
     const { postId } = req.params;
@@ -199,9 +201,6 @@ export const togglePostVisibility = async (req: Request, res: Response) => {
     return res.status(500).json({ Error: 'Internal Server Error' });
   }
 };
-
-
-
 
 export const fetchAllPosts = async (req: Request, res: Response) => {
   try {
@@ -259,7 +258,7 @@ export const fetchPostsByUser = async (req: Request | any, res: Response) => {
         include: {
           model: User,
           as: 'User',
-          attributes: ['id', 'firstName', 'lastName', 'email'],
+          attributes: ['id', 'firstName', 'lastName', 'email', 'profilePhoto'],
         },
       });
     } else {
@@ -268,7 +267,7 @@ export const fetchPostsByUser = async (req: Request | any, res: Response) => {
         include: {
           model: User,
           as: 'User',
-          attributes: ['id', 'firstName', 'lastName', 'email'],
+          attributes: ['id', 'firstName', 'lastName', 'email', 'profilePhoto'],
         },
       });
     }
@@ -288,20 +287,23 @@ export const fetchPostsByUser = async (req: Request | any, res: Response) => {
 export const deletePost = async (req: Request, res: Response) => {
   try {
     const postId = req.params.id;
-    const groupId = req.query.groupId as string;
+const groupId = req.query.groupId as string;
 
-    const post = groupId
-      ? await Post.findOne({ where: { id: postId, groupId: groupId } }) // Delete group post
-      : await Post.findByPk(postId); // Delete general post
+const post = groupId
+  ? await Post.findOne({ where: { id: postId, groupId: groupId } }) // Delete group post
+  : await Post.findByPk(postId); // Delete general post
 
-    if (!post) {
-      return res.status(404).json({ error: 'Post not found' });
-    }
+if (!post) {
+  return res.status(404).json({ error: 'Post not found' });
+}
 
-    // Delete the post
-    await post.destroy();
+// Delete associated comments
+await Comment.destroy({ where: { post_id: post.id } });
 
-    return res.status(200).json({ message: 'Post deleted successfully' });
+// Delete the post
+await post.destroy();
+
+return res.status(200).json({ message: 'Post and associated comments deleted successfully' });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error: 'Internal Server Error' });

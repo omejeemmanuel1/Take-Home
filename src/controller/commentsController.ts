@@ -48,7 +48,7 @@ export const fetchComments = async (req: Request, res: Response) => {
         offset: pageNumber,
         include: {
           model: User,
-          attributes: ['id', 'firstName', 'lastName', 'email'], 
+          attributes: ['id', 'firstName', 'lastName', 'email', 'profilePhoto'], 
         },
       });
   
