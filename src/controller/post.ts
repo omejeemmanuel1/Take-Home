@@ -210,7 +210,10 @@ export const fetchAllPosts = async (req: Request, res: Response) => {
 
     if (groupId) {
       posts = await Post.findAll({
-        where: { groupId: groupId as string },
+        where: {
+          groupId: groupId as string,
+          visible: true, // Only fetch visible posts
+        },
         include: {
           model: User,
           as: 'User',
@@ -219,6 +222,9 @@ export const fetchAllPosts = async (req: Request, res: Response) => {
       });
     } else {
       posts = await Post.findAll({
+        where: {
+          visible: true, // Only fetch visible posts
+        },
         include: {
           model: User,
           as: 'User',
@@ -226,6 +232,9 @@ export const fetchAllPosts = async (req: Request, res: Response) => {
         },
       });
     }
+
+    // Exclude hidden posts from the response
+    posts = posts.filter((post) => post.visible === true);
 
     if (posts.length === 0) {
       return res.status(404).json({
@@ -244,6 +253,7 @@ export const fetchAllPosts = async (req: Request, res: Response) => {
     });
   }
 };
+
 
 export const fetchPostsByUser = async (req: Request | any, res: Response) => {
   try {
