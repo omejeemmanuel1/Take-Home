@@ -212,7 +212,7 @@ export const fetchAllPosts = async (req: Request, res: Response) => {
       posts = await Post.findAll({
         where: {
           groupId: groupId as string,
-          visible: true, // Only fetch visible posts
+          visible: true,
         },
         include: {
           model: User,
@@ -223,7 +223,7 @@ export const fetchAllPosts = async (req: Request, res: Response) => {
     } else {
       posts = await Post.findAll({
         where: {
-          visible: true, // Only fetch visible posts
+          visible: true,
         },
         include: {
           model: User,
@@ -233,7 +233,6 @@ export const fetchAllPosts = async (req: Request, res: Response) => {
       });
     }
 
-    // Exclude hidden posts from the response
     posts = posts.filter((post) => post.visible === true);
 
     if (posts.length === 0) {
