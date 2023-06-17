@@ -5,10 +5,9 @@
  */
 require('dotenv').config()
 
-var app = require('../dist/app').default;
+var {app, socketapi} = require('../dist/app').default;
 var debug = require('debug')('live-project-backend-mindconnect:server');
 var http = require('http');
-
 /**
  * Get port from environment and store in Express.
  */
@@ -21,6 +20,12 @@ app.set('port', port);
  */
 
 var server = http.createServer(app);
+socketapi.io.attach(server, {
+  cors: {
+    origin: "http://localhost:5173",
+    credentials: true,
+  },
+});
 
 /**
  * Listen on provided port, on all network interfaces.

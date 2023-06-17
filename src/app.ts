@@ -11,12 +11,15 @@ import commentRouter from "./routes/comments"
 import registerRouter from './routes/register';
 const groupRouter = require("./routes/group");
 import { connectDb, sequelize } from './config/database';
+import socketapi from "./config/chatEngine"
+
+ 
 
 const app = express();
 
 app.use(
   cors({
-    origin: true, // Replace with the actual origin of your frontend
+    origin:true,
     credentials: true,
   })
 );
@@ -73,4 +76,4 @@ app.use(function (err: createError.HttpError, req: Request, res: Response, next:
   res.render('error');
 });
 
-export default app;
+export default {app, socketapi};
