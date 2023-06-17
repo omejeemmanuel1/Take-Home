@@ -26,6 +26,7 @@ export const createComment = async (req: JwtPayload, res: Response) => {
             post_id: postId,
             user_id: userId,
             comment,
+            like: [],
         });
         await Post.increment('comment', { by: 1, where: { id: postId }});
         res.status(201).json({comment: newComment});
@@ -47,7 +48,7 @@ export const fetchComments = async (req: Request, res: Response) => {
         offset: pageNumber,
         include: {
           model: User,
-          attributes: ['id', 'firstName', 'lastName', 'email'], 
+          attributes: ['id', 'firstName', 'lastName', 'email', 'profilePhoto'], 
         },
       });
   
@@ -58,6 +59,30 @@ export const fetchComments = async (req: Request, res: Response) => {
     }
   }
   
+
+  export const likeComment = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { userId } = req.body;
+  
+    try {
+      const likedComment = await Comment.findOne({ where: { id: id } });
+      if (!likedComment) {
+        return res.status(400).json({ message: 'Comment not found' });
+      }
+      const likeArr: string[] = [...likedComment.like];
+      let updatedLikeArr: string[];
+      if (likeArr.includes(userId)) {
+        updatedLikeArr = likeArr.filter((item) => item !== userId);
+      } else {
+        updatedLikeArr = [...likeArr, userId];
+      }
+      await likedComment.update({ like: [...updatedLikeArr] });
+      return res.status(200).json({ likedComment });
+    } catch (error) {
+      return res.status(500).json(error);
+    }
+  };
+
 
 // export const deleteComment = async (req: JwtPayload, res: Response) => {
 //     const {commentId} = req.params;

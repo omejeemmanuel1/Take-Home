@@ -92,34 +92,56 @@ const getAllGroups = async (req: Request, res: Response) => {
   }
 };
 
-const joinGroup = async (req: Request|any, res: Response) => {
-  const groupId = req.params.id;
-  const userId = req.user as string;
-  try {
-    const group = await Group.findOne({where:{id:groupId}});
-    if (!group) {
-      return res.status(404).json({
-        message: 'Group not found',
+
+
+
+export const joinGroup = async (req: Request & { user: { id: string } }, res: Response) => {
+    const groupId = req.body.id;
+    console.log(groupId); // Check if the groupId matches the expected value
+  
+    try {
+      const group = await Group.findByPk(groupId);
+      console.log(group); // Check the retrieved group object
+      if (!group) {
+        return res.status(404).json({
+          message: 'Group not found',
+        });
+      }
+  
+      if (group.users.includes(req.user.id)) {
+        return res.status(400).json({
+          message: 'You are already a member of the group',
+        });
+      }
+  
+      // Add the user ID to the users array
+      group.users.push(req.user.id);
+      group.updatedAt = new Date(); // Update the updatedAt field
+  
+      await group.save();
+  
+      return res.status(200).json({
+        message: 'You have joined the group successfully',
+        group: {
+          id: group.id,
+          userId: req.user.id,
+          groupName: group.groupName,
+          about: group.about,
+          users: group.users,
+          createdAt: group.createdAt,
+          updatedAt: group.updatedAt,
+        },
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({
+        message: 'Server Error',
       });
     }
-    if (group.users.includes(userId)) {
-      return res.status(404).json({
-        message: 'You are already a member of the group',
-      });
-    }
-    group.users.push(userId);
-    await group.save();
-    return res.status(200).json({
-      message: 'You have joined the group successfully',
-      group,
-    });
-  } catch (err) {
-    console.log(err);
-    return res.status(500).json({
-      err: 'Server Error',
-    });
-  }
-};
+  };
+  
+
+
 
 const leaveGroup = async (req: Request|any, res: Response) => {
   const groupId = req.params.id;

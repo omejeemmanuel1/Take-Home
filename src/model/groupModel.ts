@@ -1,6 +1,8 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../config/database';
+import Post from './postModel';
 import User from './registerModel';
+import Comment from './commentsModel';
 
 export interface GroupAttributes {
   id: string;
@@ -10,12 +12,14 @@ export interface GroupAttributes {
   users: string[];
 }
 
-class Group extends Model<GroupAttributes, GroupAttributes> implements GroupAttributes {
+class Group extends Model<GroupAttributes> implements GroupAttributes {
   id!: string;
   userId!: string;
   groupName!: string;
   about!: string;
   users!: string[];
+  createdAt!: Date;
+  updatedAt!: Date;
 }
 
 Group.init(
@@ -45,7 +49,7 @@ Group.init(
     users: {
       type: DataTypes.ARRAY(DataTypes.UUID),
       defaultValue: [],
-      },
+    },
   },
   {
     sequelize,
@@ -54,7 +58,6 @@ Group.init(
   }
 );
 
+
+
 export default Group;
-
-
-
