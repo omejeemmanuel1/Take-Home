@@ -18,7 +18,8 @@ export const sendVerificationOTP = async (email: string, otp: number) => {
     try {
         const transporter = nodemailer.createTransport({
             host: process.env.smtp_host,
-            port: 587,
+            port: 465,
+            secure: true,
             auth: {
                 user: process.env.sendinblue_user,
                 pass: process.env.sendinblue_pass,

@@ -75,24 +75,27 @@ const getAllGroups = async (req: Request, res: Response) => {
 const getGroupById = async (req: Request, res: Response) => {
   const groupId = req.params.id;
   try {
-    const group = await Group.findOne({where:{id:groupId}});
+    const group = await Group.findOne({
+      where: { id: groupId },
+      attributes: ['groupName', 'id', 'userId', 'about', 'users', 'createdAt', 'updatedAt'],
+    });
+
     if (!group) {
       return res.status(404).json({
         message: 'Group not found',
       });
     }
+
     return res.status(200).json({
       group,
     });
   } catch (err) {
     console.log(err);
     return res.status(500).json({
-      err: 'Server Error',
+      error: 'Server Error',
     });
   }
 };
-
-
 
 
 export const joinGroup = async (req: Request & { user: { id: string } }, res: Response) => {
