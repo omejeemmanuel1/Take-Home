@@ -72,7 +72,7 @@ const getAllGroups = async (req: Request, res: Response) => {
 
 
 
-const getGroupById = async (req: Request, res: Response) => {
+ export const getGroupById = async (req: Request, res: Response) => {
   const groupId = req.params.id;
   try {
     const group = await Group.findOne({where:{id:groupId}});
