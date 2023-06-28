@@ -11,7 +11,7 @@ import commentRouter from "./routes/comments"
 import registerRouter from './routes/register';
 const groupRouter = require("./routes/group");
 import { connectDb, sequelize } from './config/database';
-import socketapi from "./config/chatEngine"
+import {socketapi, router} from "./config/chatEngine"
 
  
 
@@ -49,6 +49,7 @@ app.use('/user', resetRouter);
 app.use("/group", groupRouter)
 app.use('/post', postRoute)
 app.use('/comment', commentRouter)
+app.use('/api', router)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
