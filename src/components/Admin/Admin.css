@@ -1,0 +1,57 @@
+.heading {
+    text-align: center;
+    margin-bottom: 20px;
+    margin-top: 5rem;
+    padding-top: 4rem;
+  }
+
+  .mt-4{
+
+    padding-bottom: 12px;
+  }
+  
+  .list-group,
+  .list-group-item,
+  .comparison-section {
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .comparison-section {
+    text-align: center;
+    margin-bottom: 5rem;
+    padding-bottom: 5rem;
+  }
+  
+  .comparison-button {
+    background-color: #6cbe02;;
+    color: #fff;
+    border: none;
+    height: 35px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    margin-bottom: 1rem;
+    border-radius: 5px;
+  }
+  .logout-button{
+    background-color: #b82c2c;
+    color: #fff;
+    border: none;
+    height: 35px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    margin-bottom: 1rem;
+    border-radius: 5px;
+  }
+  
+  .user-fullname {
+    font-weight: bold;
+    background-color: #f2f2f2;
+    border-radius: 4px;
+    padding: 0.25rem 0.5rem;
+  }
+
+  .highlighted {
+    color: darkgreen;
+  }

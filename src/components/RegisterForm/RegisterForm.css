@@ -1,0 +1,71 @@
+.container {
+  width: 600px;
+    margin: 0 auto;
+    padding: 5rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); 
+  }
+
+.header {
+    position: relative;
+    min-height: 0vh;
+    overflow-x: hidden;
+}
+
+  .loginform {
+    padding: 5rem 0;
+    max-width: 50rem;
+    margin: 0;
+  }
+  
+  
+  .loginform form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .loginform form h1 {
+    margin-bottom: 1rem;
+  }
+  .loginform form p {
+    margin-bottom: 2rem;
+  }
+  
+  .loginform form label {
+    margin-bottom: 1rem;
+  }
+  
+  .loginform form input {
+    border: 1px solid #ccc;
+    outline: none;
+    padding: 1.5rem 0;
+    text-indent: 1rem;
+    font-size: 1.6rem;
+    margin-bottom: 2rem;
+    border-radius: 0.5rem;
+  }
+  
+  .loginform form input::placeholder {
+    font-size: 1.6rem;
+    color: #222;
+  }
+  
+  .loginform form .buttons {
+    margin-top: 1rem;
+  }
+  
+  .loginform form button {
+    outline: none;
+    border: none;
+    font-size: 1.6rem;
+    padding: 1rem 3rem;
+    margin-right: 1.5rem;
+    background-color: var(--green);
+    color: white;
+    cursor: pointer;
+  }
+  
+  .loginform form p a {
+    color: dodgerblue;
+    margin-right: 5px;
+  }
+  
