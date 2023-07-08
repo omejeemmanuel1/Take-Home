@@ -29,35 +29,40 @@ const LoginForm = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
+  
     try {
       // Login user in the backend
       const response = await axios.post('https://take-home.onrender.com/user/login', {
         email,
         password,
       });
-
+  
       const { token } = response.data;
-
+  
       // Sign in user with Firebase Auth
       await signInWithEmailAndPassword(auth, email, password);
       const firebaseUser = auth.currentUser;
-
+  
       localStorage.setItem('token', token);
-
+  
       // Navigate based on user type
       if (firebaseUser.email === 'admin@yahoo.com') {
         navigate('/adminPage');
       } else {
         navigate('/dashboard');
       }
-
+  
       toast.success('Login successful!');
     } catch (error) {
       console.error(error);
-      toast.error('An error occurred. Please try again.');
+      if (error.response && error.response.data && error.response.data.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error('An error occurred. Please try again.');
+      }
     }
   };
+  
 
   return (
     <div className="container">
