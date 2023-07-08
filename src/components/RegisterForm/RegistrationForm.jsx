@@ -45,26 +45,25 @@ const RegistrationForm = () => {
       // Proceed only if the Firebase Auth user creation was successful
       if (authUser) {
         // Register user in the database
-        const response = await axios.post("http://localhost:4000/user/register", {
+        const response = await axios.post("https://take-home.onrender.com/user/register", {
           fullName,
           email,
           password,
           confirmPassword,
         });
   
-        console.log(response); // Log the response object for troubleshooting
-  
-        // Proceed only if the database registration was successful
+        console.log(response); 
+     
         if (response.status === 201) {
           toast.success("Registration successful!");
-          window.location.href = "/login"; // Navigate to "/login" after successful registration
-          return; // Exit the function after navigating
+          window.location.href = "/login"; 
+          return; 
         } else {
           toast.error("An error occurred during database registration. Please try again.");
   
-          // Delete the created user in Firebase Auth
+         
           await authUser.delete();
-          return; // Exit the function without navigating
+          return; 
         }
       } else {
         toast.error("An error occurred during user creation. Please try again.");

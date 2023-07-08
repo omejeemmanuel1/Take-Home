@@ -10,8 +10,7 @@ const MyDashboard = () => {
   const [numberCompanies, setNumberCompanies] = useState(0);
   const [numberProducts, setNumberProducts] = useState(0);
 
-  const handleCreateProduct = async (e) => {
-    e.preventDefault();
+  const handleCreateProduct = async () => {
 
     try {
       const token = localStorage.getItem('token');
