@@ -10,25 +10,28 @@ const MyDashboard = () => {
   const [numberCompanies, setNumberCompanies] = useState(0);
   const [numberProducts, setNumberProducts] = useState(0);
 
-  const handleCreateProduct = async () => {
-
+  const handleCreateProduct = async (e) => {
+    e.preventDefault(); 
+  
     try {
       const token = localStorage.getItem('token');
-
+  
       const response = await axios.post(
         'https://take-home.onrender.com/product/create-product',
         { numberCompanies, numberProducts },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-
+  
       console.log(response.data);
-
+  
       toast.success('Products created successfully!');
+      window.location.reload(); 
     } catch (error) {
       console.error(error);
       toast.error('An error occurred. Please try again.');
     }
   };
+  
 
   const handleLogout = () => {
     localStorage.clear();
