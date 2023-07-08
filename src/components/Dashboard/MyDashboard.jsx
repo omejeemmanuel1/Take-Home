@@ -16,7 +16,7 @@ const MyDashboard = () => {
       const token = localStorage.getItem('token');
 
       const response = await axios.post(
-        'http://localhost:4000/product/create-product',
+        'https://take-home.onrender.com/product/create-product',
         { numberCompanies, numberProducts },
         { headers: { Authorization: `Bearer ${token}` } }
       );
