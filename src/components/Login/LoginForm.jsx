@@ -31,7 +31,6 @@ const LoginForm = () => {
     e.preventDefault();
   
     try {
-      // Login user in the backend
       const response = await axios.post('https://take-home.onrender.com/user/login', {
         email,
         password,
@@ -39,7 +38,6 @@ const LoginForm = () => {
   
       const { token } = response.data;
   
-      // Sign in user with Firebase Auth
       await signInWithEmailAndPassword(auth, email, password);
       const firebaseUser = auth.currentUser;
   
@@ -55,13 +53,20 @@ const LoginForm = () => {
       toast.success('Login successful!');
     } catch (error) {
       console.error(error);
-      if (error.response && error.response.data && error.response.data.message) {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.error === 'Invalid email or password'
+      ) {
+        toast.error('Invalid email or password');
+      } else if (error.response && error.response.data && error.response.data.message) {
         toast.error(error.response.data.message);
       } else {
         toast.error('An error occurred. Please try again.');
       }
     }
   };
+  
   
 
   return (
