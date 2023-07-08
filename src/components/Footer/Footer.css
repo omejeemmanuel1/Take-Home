@@ -2,7 +2,6 @@
     padding: 7rem 1rem;
     background-color: var(--green);
     margin-top: 10rem;
-    width: 100%;
   }
   
   footer .row {
@@ -17,8 +16,5 @@
     footer .row {
       grid-template-columns: 1fr;
       row-gap: 3rem;
-    }
-    .footer {
-      width: 100%;
     }
   }
