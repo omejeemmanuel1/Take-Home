@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
@@ -9,25 +9,9 @@ const MyDashboard = () => {
   const navigate = useNavigate();
   const [numberCompanies, setNumberCompanies] = useState(0);
   const [numberProducts, setNumberProducts] = useState(0);
-  const [products, setProducts] = useState([]);
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        const response = await axios.get(
-          'https://take-home.onrender.com/product/all',
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        setProducts(response.data.products || []);
-      } catch (error) {
-        console.error(error);
-        toast.error('An error occurred while fetching products.');
-      }
-    };
 
-    fetchProducts();
-  }, []);
+ 
 
   const handleCreateProduct = async (e) => {
     e.preventDefault();
@@ -46,7 +30,6 @@ const MyDashboard = () => {
       toast.success('Products created successfully!');
       setNumberCompanies(0);
       setNumberProducts(0);
-      setProducts((prevProducts) => [...prevProducts, response.data.product]);
     } catch (error) {
       console.error(error);
       toast.error('An error occurred. Please try again.');
@@ -92,15 +75,6 @@ const MyDashboard = () => {
             </button>
           </div>
         </form>
-
-        <div>
-          <h3>Products</h3>
-          <ul>
-            {products.map((product, index) => (
-              <li key={index}>{product}</li>
-            ))}
-          </ul>
-        </div>
 
         <ToastContainer />
       </div>
