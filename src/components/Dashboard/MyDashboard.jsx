@@ -31,10 +31,7 @@ const MyDashboard = () => {
   };
 
   const handleLogout = () => {
-    // Clear localStorage
     localStorage.clear();
-
-    // Navigate to login page
     navigate('/login');
   };
 
