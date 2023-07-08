@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./RegisterForm.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { initializeApp } from "firebase/app";
@@ -21,6 +21,8 @@ const firebaseConfig = {
 initializeApp(firebaseConfig);
 const auth = getAuth();
 
+
+
 const RegistrationForm = () => {
 
   const [email, setEmail] = useState("");
@@ -28,6 +30,7 @@ const RegistrationForm = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  const navigate = useNavigate();
  
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -56,7 +59,7 @@ const RegistrationForm = () => {
      
         if (response.status === 201) {
           toast.success("Registration successful!");
-          window.location.href = "/login"; 
+          navigate('/login');
           return; 
         } else {
           toast.error("An error occurred during database registration. Please try again.");

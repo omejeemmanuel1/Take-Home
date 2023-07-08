@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import './Admin.css';
-;
-
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "./Admin.css";
 const Admin = () => {
   const [users, setUsers] = useState([]);
   const navigate = useNavigate();
@@ -13,25 +11,27 @@ const Admin = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const token = localStorage.getItem('token');
-        const response = await axios.get('https://take-home.onrender.com/product/all', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          "https://take-home.onrender.com/product/all",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
 
         setUsers(response.data.users || []);
       } catch (error) {
         console.error(error);
-        toast.error('An error occurred while fetching products.');
+        toast.error("An error occurred while fetching products.");
       }
     };
 
     fetchProducts();
   }, []);
 
-
   const handleLogout = () => {
     localStorage.clear();
-    navigate('/login');
+    navigate("/login");
   };
 
   return (
@@ -48,7 +48,6 @@ const Admin = () => {
               </li>
             ))}
           </ul>
-         
         </div>
       </div>
 
