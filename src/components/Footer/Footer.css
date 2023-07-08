@@ -2,6 +2,7 @@
     padding: 7rem 1rem;
     background-color: var(--green);
     margin-top: 10rem;
+    width: 100%;
   }
   
   footer .row {

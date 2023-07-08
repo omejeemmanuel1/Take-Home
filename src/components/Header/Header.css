@@ -2,12 +2,14 @@
    
     min-height: 100vh;
     overflow-x: hidden;
+    width: 100%;
   }
 
   .topnav {
     background-color: var(--green);
     font-size: 1.3rem;
     color: var(--white);
+    width: 100%; 
   }
   
   .topnav div {
