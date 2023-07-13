@@ -64,9 +64,6 @@ const Admin = () => {
             <p>
               <strong>Match:</strong> {comparison.match ? 'Yes' : 'No'}
             </p>
-            <p>
-              <strong>Difference in Company:</strong> {comparison.differenceInCompany}
-            </p>
           </div>
         )}
       </div>
