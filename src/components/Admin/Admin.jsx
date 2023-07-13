@@ -1,37 +1,39 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import "./Admin.css";
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import './Admin.css';
+
 const Admin = () => {
+  const [products, setProducts] = useState([]);
   const [users, setUsers] = useState([]);
-  const navigate = useNavigate();
+  const [comparison, setComparison] = useState({});
+  const [comparisonVisible, setComparisonVisible] = useState(false);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get(
-          "https://take-home.onrender.com/product/all",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+        const token = localStorage.getItem('token');
+        const response = await axios.get('https://take-home.onrender.com/product/all', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
-        setUsers(response.data.users || []);
+        const { users: fetchedUsers, comparison } = response.data;
+
+        setProducts(response.data.products || []);
+        setUsers(fetchedUsers || []);
+        setComparison(comparison || {});
       } catch (error) {
         console.error(error);
-        toast.error("An error occurred while fetching products.");
+        toast.error('An error occurred while fetching products.');
       }
     };
 
     fetchProducts();
   }, []);
 
-  const handleLogout = () => {
-    localStorage.clear();
-    navigate("/login");
+  const toggleComparisonVisibility = () => {
+    setComparisonVisible(!comparisonVisible);
   };
 
   return (
@@ -60,7 +62,7 @@ const Admin = () => {
           <div className="comparison-section shadow">
             <h2>Comparison</h2>
             <p>
-              <strong>Match:</strong> {comparison.match ? 'Yes, its a match' : 'No, theres no match'}
+              <strong>Match:</strong> {comparison.match ? 'Yes' : 'No'}
             </p>
             <p>
               <strong>Difference in Company:</strong> {comparison.differenceInCompany}
