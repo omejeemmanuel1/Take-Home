@@ -39,8 +39,9 @@ const Admin = () => {
       <h1 className="heading">Admin</h1>
 
       <div className="row">
+
         <div className="col-md-6">
-          <h3>Users</h3>
+          <h3>Users and Products</h3>
           <ul className="list-group shadow">
             {users.map((user, index) => (
               <li key={index} className="list-group-item">
@@ -51,9 +52,22 @@ const Admin = () => {
         </div>
       </div>
 
-      <button onClick={handleLogout} className="logout-button">
-        Logout
-      </button>
+      <div className="mt-4">
+        <button onClick={toggleComparisonVisibility} className="comparison-button">
+          Compare
+        </button>
+        {comparisonVisible && (
+          <div className="comparison-section shadow">
+            <h2>Comparison</h2>
+            <p>
+              <strong>Match:</strong> {comparison.match ? 'Yes' : 'No'}
+            </p>
+            <p>
+              <strong>Difference in Company:</strong> {comparison.differenceInCompany}
+            </p>
+          </div>
+        )}
+      </div>
 
       <ToastContainer />
     </div>
