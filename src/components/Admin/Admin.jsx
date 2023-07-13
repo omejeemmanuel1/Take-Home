@@ -5,7 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import './Admin.css';
 
 const Admin = () => {
-  const [products, setProducts] = useState([]);
+  const [, setProducts] = useState([]);
   const [users, setUsers] = useState([]);
   const [comparison, setComparison] = useState({});
   const [comparisonVisible, setComparisonVisible] = useState(false);
