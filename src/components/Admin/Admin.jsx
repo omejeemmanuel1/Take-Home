@@ -60,7 +60,7 @@ const Admin = () => {
           <div className="comparison-section shadow">
             <h2>Comparison</h2>
             <p>
-              <strong>Match:</strong> {comparison.match ? 'Yes' : 'No'}
+              <strong>Match:</strong> {comparison.match ? 'Yes, its a match' : 'No, theres no match'}
             </p>
             <p>
               <strong>Difference in Company:</strong> {comparison.differenceInCompany}
